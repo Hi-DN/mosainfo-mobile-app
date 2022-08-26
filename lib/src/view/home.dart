@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mosainfo_mobile_app/src/custom_appbar.dart';
-import 'package:mosainfo_mobile_app/src/streaming_view.dart';
+import 'package:mosainfo_mobile_app/src/components/custom_appbar.dart';
+import 'package:mosainfo_mobile_app/src/view/streaming_view.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);

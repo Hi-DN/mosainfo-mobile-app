@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mosainfo_mobile_app/src/home.dart';
+import 'package:mosainfo_mobile_app/src/view/home.dart';
 
 class MosainfoApp extends StatelessWidget {
   @override

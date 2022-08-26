@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:mosainfo_mobile_app/src/custom_appbar.dart';
+import 'package:mosainfo_mobile_app/src/components/custom_appbar.dart';
 
 class StreamingView extends StatefulWidget {
   const StreamingView({Key? key}) : super(key: key);
