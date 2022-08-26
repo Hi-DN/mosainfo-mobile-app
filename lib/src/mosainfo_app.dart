@@ -5,9 +5,9 @@ class MosainfoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-          title: 'Navada',
+          title: 'Mosainfo',
           theme: ThemeData(
-            primarySwatch: Colors.green,
+            primarySwatch: Colors.indigo,
           ),
           home: const Home(),
         );

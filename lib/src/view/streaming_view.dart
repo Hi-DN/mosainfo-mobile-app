@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:mosainfo_mobile_app/src/components/custom_appbar.dart';
 
 class StreamingView extends StatefulWidget {
   const StreamingView({Key? key}) : super(key: key);
@@ -23,7 +22,19 @@ class _StreamingViewState extends State<StreamingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(leadingYn: true),
+      appBar: AppBar(
+        title: const Text('Enjoy Watching!', 
+        style: TextStyle(color: Color(0xFF2F4858), fontWeight: FontWeight.w700)),
+        backgroundColor: Colors.white,
+        leading: Padding(
+              padding: const EdgeInsets.only(left: 14),
+              child: GestureDetector(
+                  onTap: () {
+                      Navigator.pop(context);
+                  },
+                  child: const Icon(Icons.arrow_back, color: Color(0xFF2F4858))),
+        )
+      ),
       body: Center(
         child: VlcPlayer(
           controller: _vlcViewController, 
