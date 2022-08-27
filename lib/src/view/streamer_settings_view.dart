@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mosainfo_mobile_app/src/constants/colors.dart';
+import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import '../types/channel.dart';
@@ -6,16 +8,16 @@ import '../types/params.dart';
 import '../types/resolution.dart';
 import '../types/sample_rate.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key, required this.params}) : super(key: key);
+class StreamerSettingsView extends StatefulWidget {
+  const StreamerSettingsView({Key? key, required this.params}) : super(key: key);
   final Params params;
 
   @override
   // ignore: library_private_types_in_public_api
-  _SettingsScreenState createState() => _SettingsScreenState();
+  _StreamerSettingsViewState createState() => _StreamerSettingsViewState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _StreamerSettingsViewState extends State<StreamerSettingsView> {
   int resultAlert = -1;
 
   @override
@@ -27,17 +29,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Streamer Settings', 
-        style: TextStyle(color: Color(0xFF2F4858), fontWeight: FontWeight.w700)),
-        backgroundColor: Colors.white,
-        leading: Padding(
-              padding: const EdgeInsets.only(left: 14),
-              child: GestureDetector(
-                  onTap: () {
-                      Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.arrow_back, color: Color(0xFF2F4858))),
-        )
+        title: Text('Streamer Settings', style: styleBGreyNavy),
+        backgroundColor: white,
+        leading: _arrowBackLeadingIcon()
       ),
       body: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -88,32 +82,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   //   },
                   // ),
                   CustomSettingsTile(
-                    child: Container(
-                      child: Column(
-                        children: [
-                          SettingsTile(
-                            title: const Text('Bitrate'),
-                          ),
-                          Row(
-                            children: [
-                              Slider(
-                                value: (widget.params.video.bitrate / 1024)
-                                    .toDouble(),
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    widget.params.video.bitrate =
-                                        (newValue.roundToDouble() * 1024)
-                                            .toInt();
-                                  });
-                                },
-                                min: 500,
-                                max: 10000,
-                              ),
-                              Text('${widget.params.video.bitrate}')
-                            ],
-                          )
-                        ],
-                      ),
+                    child: Column(
+                      children: [
+                        SettingsTile(
+                          title: const Text('Bitrate'),
+                        ),
+                        Row(
+                          children: [
+                            Slider(
+                              value: (widget.params.video.bitrate / 1024)
+                                  .toDouble(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  widget.params.video.bitrate =
+                                      (newValue.roundToDouble() * 1024)
+                                          .toInt();
+                                });
+                              },
+                              min: 500,
+                              max: 10000,
+                            ),
+                            Text('${widget.params.video.bitrate}')
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ],
@@ -247,6 +239,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )
             ],
           )),
+    );
+  }
+
+  Widget _arrowBackLeadingIcon() {
+    return Padding(
+          padding: const EdgeInsets.only(left: 14),
+          child: GestureDetector(
+              onTap: () {
+                  Navigator.pop(context);
+              },
+              child: const Icon(Icons.arrow_back, color: greyNavy)),
     );
   }
 }

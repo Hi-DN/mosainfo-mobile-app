@@ -3,11 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:apivideo_live_stream/apivideo_live_stream.dart';
 import 'package:flutter/services.dart';
+import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/types/params.dart';
 import 'package:mosainfo_mobile_app/src/view/streamer_settings_view.dart';
+import 'package:mosainfo_mobile_app/src/view/text_style.dart';
+import 'package:mosainfo_mobile_app/utils/dialog.dart';
 
 class StreamerView extends StatefulWidget {
   const StreamerView({Key? key}) : super(key: key);
+
+  static const routeName = 'streamer-view';
 
   @override
   State<StreamerView> createState() => _StreamerViewState();
@@ -42,7 +47,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       debugPrint('Connection succedded');
     }, onConnectionFailed: (error) {
       debugPrint('Connection failed: $error');
-      _showDialog(context, 'Connection failed', error);
+      showCustomDialog(context, 'Connection failed', error);
       if (mounted) {
         setState(() {});
       }
@@ -61,26 +66,10 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     return Scaffold(
       key:_scaffoldKey,
       appBar: AppBar(
-        title: const Text('Mosainfo', 
-        style: TextStyle(color: Color(0xFF2F4858), fontWeight: FontWeight.w700)),
-        backgroundColor: Colors.white,
-        leading: Padding(
-              padding: const EdgeInsets.only(left: 14),
-              child: GestureDetector(
-                  onTap: () {
-                      Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.arrow_back, color: Color(0xFF2F4858))),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {_awaitResultFromSettingsFinal(context);},
-            child: const Padding(
-              padding: EdgeInsets.only(right: 15),
-              child: Icon(Icons.settings, color: Color(0xFF2F4858)),
-            )
-          )
-        ],
+        title: Text('Enjoy Streaming!', style: styleBGreyNavy),
+        backgroundColor: white,
+        leading: _arrowBackLeadingIcon(),
+        actions: [_settingsActionIcon()],
       ),
       body: Center(
         child: Column(
@@ -98,14 +87,34 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
         )
       )
     );
-    
+  }
+
+  Widget _arrowBackLeadingIcon() {
+    return Padding(
+          padding: const EdgeInsets.only(left: 14),
+          child: GestureDetector(
+              onTap: () {
+                  Navigator.pop(context);
+              },
+              child: const Icon(Icons.arrow_back, color: greyNavy)),
+    );
+  }
+
+  Widget _settingsActionIcon() {
+    return GestureDetector(
+            onTap: () {_awaitResultFromSettingsFinal(context);},
+            child: const Padding(
+              padding: EdgeInsets.only(right: 15),
+              child: Icon(Icons.settings, color: greyNavy),
+            )
+          );
   }
 
   void _awaitResultFromSettingsFinal(BuildContext context) async {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SettingsScreen(params: config)));
+            builder: (context) => StreamerSettingsView(params: config)));
     _controller.setVideoConfig(config.video);
     _controller.setAudioConfig(config.audio);
   }
@@ -114,40 +123,43 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   Widget _controlRowWidget() {
     final LiveStreamController liveStreamController = _controller;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.cameraswitch),
-          color: Colors.black,
-          onPressed:
-              liveStreamController != null ? onSwitchCameraButtonPressed : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.mic_off),
-          color: Colors.black,
-          onPressed: liveStreamController != null
-              ? onToggleMicrophoneButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.fiber_manual_record),
-          color: Colors.black,
-          onPressed:
-              !liveStreamController.isStreaming
-                  ? onStartStreamingButtonPressed
-                  : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.stop),
-          color: Colors.black,
-          onPressed:
-              liveStreamController.isStreaming
-                  ? onStopStreamingButtonPressed
-                  : null,
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.only(top: 10, bottom: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.cameraswitch),
+            color: black,
+            onPressed:
+                liveStreamController != null ? onSwitchCameraButtonPressed : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.mic_off),
+            color: black,
+            onPressed: liveStreamController != null
+                ? onToggleMicrophoneButtonPressed
+                : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.fiber_manual_record),
+            color: black,
+            onPressed:
+                !liveStreamController.isStreaming
+                    ? onStartStreamingButtonPressed
+                    : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.stop),
+            color: black,
+            onPressed:
+                liveStreamController.isStreaming
+                    ? onStopStreamingButtonPressed
+                    : null,
+          ),
+        ],
+      ),
     );
   }
 
@@ -163,10 +175,10 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       liveStreamController.switchCamera();
     } catch (error) {
       if (error is PlatformException) {
-        _showDialog(
+        showCustomDialog(
             context, "Error", "Failed to switch camera: ${error.message}");
       } else {
-        _showDialog(context, "Error", "Failed to switch camera: $error");
+        showCustomDialog(context, "Error", "Failed to switch camera: $error");
       }
     }
   }
@@ -183,10 +195,10 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       liveStreamController.toggleMute();
     } catch (error) {
       if (error is PlatformException) {
-        _showDialog(
+        showCustomDialog(
             context, "Error", "Failed to toggle mute: ${error.message}");
       } else {
-        _showDialog(context, "Error", "Failed to toggle mute: $error");
+        showCustomDialog(context, "Error", "Failed to toggle mute: $error");
       }
     }
   }
@@ -204,9 +216,9 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
           streamKey: config.streamKey, url: config.rtmpUrl);
     } catch (error) {
       if (error is PlatformException) {
-        print("Error: failed to start stream: ${error.message}");
+        debugPrint("Error: failed to start stream: ${error.message}");
       } else {
-        print("Error: failed to start stream: $error");
+        debugPrint("Error: failed to start stream: $error");
       }
     }
   }
@@ -223,10 +235,10 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       liveStreamController.stopStreaming();
     } catch (error) {
       if (error is PlatformException) {
-        _showDialog(
+        showCustomDialog(
             context, "Error", "Failed to stop stream: ${error.message}");
       } else {
-        _showDialog(context, "Error", "Failed to stop stream: $error");
+        showCustomDialog(context, "Error", "Failed to stop stream: $error");
       }
     }
   }
@@ -283,28 +295,5 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     // ignore: deprecated_member_use
     _scaffoldKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
   }
-}
-
-Future<void> _showDialog(
-    BuildContext context, String title, String description) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(
-          child: Text(description),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Dismiss'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+  }
+  
