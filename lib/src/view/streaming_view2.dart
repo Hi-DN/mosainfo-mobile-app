@@ -3,16 +3,16 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 
-class StreamingView extends StatefulWidget {
-  const StreamingView({Key? key}) : super(key: key);
+class StreamingView2 extends StatefulWidget {
+  const StreamingView2({Key? key}) : super(key: key);
 
-  static const routeName = 'streaming-view';
+  static const routeName = 'streaming-view2';
 
   @override
-  State<StreamingView> createState() => _StreamingViewState();
+  State<StreamingView2> createState() => _StreamingView2State();
 }
 
-class _StreamingViewState extends State<StreamingView> {
+class _StreamingView2State extends State<StreamingView2> {
   final VlcPlayerController _vlcViewController = VlcPlayerController.network(
     "rtmp://43.201.8.14/live-out",
     autoPlay: true,
