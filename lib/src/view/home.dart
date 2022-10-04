@@ -3,10 +3,12 @@ import 'package:mosainfo_mobile_app/src/api/process_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
 import 'package:mosainfo_mobile_app/src/view/streamer_view.dart';
+import 'package:mosainfo_mobile_app/src/view/streaming_view.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
 
 
+// ignore: must_be_immutable
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
@@ -21,8 +23,7 @@ class Home extends StatelessWidget {
       body: Column(
         children: [
           _newProcessBtn(),
-          const SizedBox(height: 30),
-          // const Expanded(child: ProcessListSection())
+          const SizedBox(height: 20),
           Expanded(child: _scrollNotificationWidget())
         ],
       )
@@ -86,20 +87,35 @@ class ProcessListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ProcessProvider>(builder: (context, provider, widget) {
       return _processListView(provider.processList);
-      // if (provider.processList.isNotEmpty) {
-      //   return _processListView(provider.processList);
-      // }
-      // return const Center(child: CircularProgressIndicator());
     });
   }
 
   _processListView(List<ProcessModel> processList) {
     return ListView.separated(
       itemBuilder: ((context, index) {
-        return ListTile(
-          title: SizedBox(
+        int processId = processList[index].id!;
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+              MaterialPageRoute(builder: (context) => StreamingView(processId: processId)));
+          },
+          child: Container(
+            padding: const EdgeInsets.all(30),
             height: 90,
-            child: Text(processList[index].id.toString())),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "스트림 ID: $processId",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios)
+              ],
+            ),
+          ),
         );
       }),
       itemCount: processList.length,

@@ -32,7 +32,7 @@ class _StreamingViewState extends State<StreamingView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Enjoy Watching!', style: styleBGreyNavy),
+        title: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy),
         backgroundColor: white,
         leading: _arrowBackLeadingIcon()
       ),

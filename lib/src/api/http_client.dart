@@ -6,7 +6,10 @@ import 'package:http/http.dart' as http;
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
   // final String baseUrl = 'http://10.0.2.2:8282';
-  final String baseUrl = 'http://localhost:8282';
+  // final String baseUrl = 'http://localhost:8282';
+  // final String baseUrl = 'http://127.0.0.1:8282';
+  final String baseUrl = 'http://192.168.0.41:8282';
+
 
   String accessToken = '';
 

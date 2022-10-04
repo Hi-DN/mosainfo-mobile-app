@@ -22,11 +22,8 @@ class ProcessProvider with ChangeNotifier {
     return process;
   }
 
-  // deleteSelectedHeart(int heartId) async {
-  //   await _heartService.deleteHeartByHeartId(heartId);
-  // }
-
-  // saveSelectedHeart(int productId) async {
-  //   await _heartService.saveHeart(productId, userId);
-  // }
+  Future<bool?> startMosaic(int processId) async {
+    bool? result = await _processService.startMosaic(processId);
+    return result;
+  }
 }

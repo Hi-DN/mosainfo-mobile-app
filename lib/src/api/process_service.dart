@@ -26,5 +26,16 @@ class ProcessService {
       return null;
     }
   }
+
+  // 모자이크 시작하기
+  Future<bool?> startMosaic(int processId) async {
+    Map<String, dynamic> data = await _httpClient.getRequest('/mosaic/$processId');
+
+    if (data['result'] == 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
