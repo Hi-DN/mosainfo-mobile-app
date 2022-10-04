@@ -37,6 +37,8 @@ dependencies:
   flutter_vlc_player: ^7.1.5
   apivideo_live_stream: ^1.0.5
   settings_ui: ^2.0.2
+  http: ^0.13.5
+  provider: ^6.0.3
 
 dev_dependencies:
   flutter_test:

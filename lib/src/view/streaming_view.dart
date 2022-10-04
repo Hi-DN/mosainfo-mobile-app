@@ -4,22 +4,23 @@ import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 
 class StreamingView extends StatefulWidget {
-  const StreamingView({Key? key}) : super(key: key);
+  const StreamingView({Key? key, required this.processId}) : super(key: key);
 
-  static const routeName = 'streaming-view';
+  final int processId;
 
   @override
   State<StreamingView> createState() => _StreamingViewState();
 }
 
 class _StreamingViewState extends State<StreamingView> {
-  final VlcPlayerController _vlcViewController = VlcPlayerController.network(
-    "rtmp://54.180.123.38/live-out",
-    autoPlay: true,
-  );
+  late VlcPlayerController _vlcViewController;
 
   @override
   void initState() {
+    _vlcViewController = VlcPlayerController.network(
+      "rtmp://15.164.170.6/live-out/${widget.processId}",
+      autoPlay: true,
+    );
     super.initState();
   }
   

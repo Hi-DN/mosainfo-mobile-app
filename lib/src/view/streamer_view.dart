@@ -10,9 +10,8 @@ import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 import 'package:mosainfo_mobile_app/utils/dialog.dart';
 
 class StreamerView extends StatefulWidget {
-  const StreamerView({Key? key}) : super(key: key);
-
-  static const routeName = 'streamer-view';
+  const StreamerView({Key? key, required this.processId}) : super(key: key);
+  final int processId;
 
   @override
   State<StreamerView> createState() => _StreamerViewState();
@@ -23,6 +22,9 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   late final LiveStreamController _controller;
   late final Future<int> textureId;
 
+  String rtmpUrl = "rtmp://15.164.170.6/live";
+  late final String streamKey;
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -30,6 +32,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     _controller = initLiveStreamController();
     textureId = _controller.create(
         initialAudioConfig: config.audio, initialVideoConfig: config.video);
+    streamKey = widget.processId.toString();
+    print(streamKey);
     super.initState();
   }
 
@@ -66,7 +70,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     return Scaffold(
       key:_scaffoldKey,
       appBar: AppBar(
-        title: Text('Enjoy Streaming!', style: styleBGreyNavy),
+        title: Text(streamKey, style: styleBGreyNavy),
         backgroundColor: white,
         leading: _arrowBackLeadingIcon(),
         actions: [_settingsActionIcon()],
@@ -213,7 +217,9 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
 
     try {
       await liveStreamController.startStreaming(
-          streamKey: config.streamKey, url: config.rtmpUrl);
+        streamKey: streamKey, url: rtmpUrl
+          // streamKey: config.streamKey, url: config.rtmpUrl
+      );
     } catch (error) {
       if (error is PlatformException) {
         debugPrint("Error: failed to start stream: ${error.message}");
