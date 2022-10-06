@@ -18,7 +18,7 @@ class _StreamingViewState extends State<StreamingView> {
   @override
   void initState() {
     _vlcViewController = VlcPlayerController.network(
-      "rtmp://15.164.170.6/live-out/${widget.processId}",
+      "rtmp://13.125.225.121/live-out/${widget.processId}",
       autoPlay: true,
     );
     super.initState();

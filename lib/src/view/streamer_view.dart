@@ -25,7 +25,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   late final Future<int> textureId;
   late BuildContext? _context;
 
-  String rtmpUrl = "rtmp://15.164.170.6/live";
+  String rtmpUrl = "rtmp://13.125.225.121/live";
   late final int processId;
   late final String streamKey;
 
@@ -224,7 +224,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       await liveStreamController.startStreaming(
         streamKey: streamKey, url: rtmpUrl
       );
-      Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
+      // Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
     } catch (error) {
       if (error is PlatformException) {
         debugPrint("Error: failed to start stream: ${error.message}");
@@ -274,6 +274,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     startStreaming().then((_) {
       if (mounted) {
         setState(() {});
+        Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
       }
     });
   }
