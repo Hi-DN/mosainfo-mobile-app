@@ -33,7 +33,6 @@ class Home extends StatelessWidget {
   Widget _scrollNotificationWidget() {
     
     return NotificationListener<ScrollNotification>(
-        onNotification: _scrollNotification,
         child: RefreshIndicator(
             
             displacement: 22,
@@ -41,13 +40,6 @@ class Home extends StatelessWidget {
               Provider.of<ProcessProvider>(_context!, listen: false).fetchProcessList();
             },
             child: const ProcessListSection()));
-  }
-
-  bool _scrollNotification(ScrollNotification scrollInfo) {
-    if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-      Provider.of<ProcessProvider>(_context!, listen: false).fetchProcessList();
-    }
-    return true;
   }
 
   Widget _newProcessBtn() {
