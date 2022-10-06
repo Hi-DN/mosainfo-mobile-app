@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
 import 'package:mosainfo_mobile_app/src/view/home.dart';
-import 'package:mosainfo_mobile_app/src/view/streamer_view.dart';
-import 'package:mosainfo_mobile_app/src/view/streaming_view.dart';
+import 'package:provider/provider.dart';
 
 class MosainfoApp extends StatelessWidget {
   const MosainfoApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Mosainfo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      home: const Home(),
-      routes: {
-        StreamerView.routeName: (context) => const StreamerView(),
-        StreamingView.routeName: (context) => const StreamingView(),
-      },
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => ProcessProvider()),
+        ],
+        child: MaterialApp(
+          title: 'Mosainfo',
+          theme: ThemeData(
+            primarySwatch: Colors.indigo,
+          ),
+          home: Home(),
+        )
+      );
   }
 }

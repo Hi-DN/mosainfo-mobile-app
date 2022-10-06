@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:apivideo_live_stream/apivideo_live_stream.dart';
 import 'package:flutter/services.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
+import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
 import 'package:mosainfo_mobile_app/src/types/params.dart';
 import 'package:mosainfo_mobile_app/src/view/streamer_settings_view.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 import 'package:mosainfo_mobile_app/utils/dialog.dart';
+import 'package:provider/provider.dart';
 
 class StreamerView extends StatefulWidget {
-  const StreamerView({Key? key}) : super(key: key);
-
-  static const routeName = 'streamer-view';
+  const StreamerView({Key? key, required this.processId}) : super(key: key);
+  final int processId;
 
   @override
   State<StreamerView> createState() => _StreamerViewState();
@@ -22,6 +23,11 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   Params config = Params();
   late final LiveStreamController _controller;
   late final Future<int> textureId;
+  late BuildContext? _context;
+
+  String rtmpUrl = "rtmp://15.164.170.6/live";
+  late final int processId;
+  late final String streamKey;
 
   @override
   void initState() {
@@ -30,6 +36,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     _controller = initLiveStreamController();
     textureId = _controller.create(
         initialAudioConfig: config.audio, initialVideoConfig: config.video);
+    processId = widget.processId;
+    streamKey = widget.processId.toString();
     super.initState();
   }
 
@@ -63,10 +71,11 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Scaffold(
       key:_scaffoldKey,
       appBar: AppBar(
-        title: Text('Enjoy Streaming!', style: styleBGreyNavy),
+        title: Text("Stream ID: $streamKey", style: styleBGreyNavy),
         backgroundColor: white,
         leading: _arrowBackLeadingIcon(),
         actions: [_settingsActionIcon()],
@@ -213,7 +222,9 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
 
     try {
       await liveStreamController.startStreaming(
-          streamKey: config.streamKey, url: config.rtmpUrl);
+        streamKey: streamKey, url: rtmpUrl
+      );
+      Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
     } catch (error) {
       if (error is PlatformException) {
         debugPrint("Error: failed to start stream: ${error.message}");

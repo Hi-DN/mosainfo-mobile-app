@@ -198,45 +198,45 @@ class _StreamerSettingsViewState extends State<StreamerSettingsView> {
                   ),
                 ],
               ),
-              SettingsSection(
-                title: const Text('Endpoint'),
-                tiles: [
-                  SettingsTile(
-                      title: const Text('RTMP endpoint'),
-                      value: Text(widget.params.rtmpUrl),
-                      onPressed: (BuildContext context) {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return EditTextScreen(
-                                  title: "Enter RTMP endpoint URL",
-                                  initialValue: widget.params.rtmpUrl,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      widget.params.rtmpUrl = value;
-                                    });
-                                  });
-                            });
-                      }),
-                  SettingsTile(
-                      title: const Text('Stream key'),
-                      value: Text(widget.params.streamKey),
-                      onPressed: (BuildContext context) {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return EditTextScreen(
-                                  title: "Enter stream key",
-                                  initialValue: widget.params.streamKey,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      widget.params.streamKey = value;
-                                    });
-                                  });
-                            });
-                      }),
-                ],
-              )
+              // SettingsSection(
+              //   title: const Text('Endpoint'),
+              //   tiles: [
+              //     SettingsTile(
+              //         title: const Text('RTMP endpoint'),
+              //         value: Text(widget.params.rtmpUrl),
+              //         onPressed: (BuildContext context) {
+              //           showDialog(
+              //               context: context,
+              //               builder: (context) {
+              //                 return EditTextScreen(
+              //                     title: "Enter RTMP endpoint URL",
+              //                     initialValue: widget.params.rtmpUrl,
+              //                     onChanged: (value) {
+              //                       setState(() {
+              //                         widget.params.rtmpUrl = value;
+              //                       });
+              //                     });
+              //               });
+              //         }),
+              //     SettingsTile(
+              //         title: const Text('Stream key'),
+              //         value: Text(widget.params.streamKey),
+              //         onPressed: (BuildContext context) {
+              //           showDialog(
+              //               context: context,
+              //               builder: (context) {
+              //                 return EditTextScreen(
+              //                     title: "Enter stream key",
+              //                     initialValue: widget.params.streamKey,
+              //                     onChanged: (value) {
+              //                       setState(() {
+              //                         widget.params.streamKey = value;
+              //                       });
+              //                     });
+              //               });
+              //         }),
+              //   ],
+              // )
             ],
           )),
     );
