@@ -8,7 +8,8 @@ class HttpClient {
   // final String baseUrl = 'http://10.0.2.2:8282';
   // final String baseUrl = 'http://localhost:8282';
   // final String baseUrl = 'http://127.0.0.1:8282';
-  final String baseUrl = 'http://192.168.0.172:8282';
+  // final String baseUrl = 'http://192.168.0.139:8484';
+  final String baseUrl = 'http://d8b5-35-247-141-121.ngrok.io';
   // final String baseUrl = 'http://172.20.10.14:8282';
 
 

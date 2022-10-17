@@ -25,7 +25,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   late final Future<int> textureId;
   late BuildContext? _context;
 
-  String rtmpUrl = "rtmp://13.125.225.121/live";
+  String rtmpUrl = "rtmp://54.180.150.130/live";
   late final int processId;
   late final String streamKey;
 
@@ -273,8 +273,10 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   void onStartStreamingButtonPressed() {
     startStreaming().then((_) {
       if (mounted) {
-        setState(() {});
-        Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
+        setState(() {
+          debugPrint("스타트 모자이크");
+          Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
+        });
       }
     });
   }
