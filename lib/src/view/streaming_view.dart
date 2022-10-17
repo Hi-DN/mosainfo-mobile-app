@@ -14,7 +14,7 @@ class StreamingView extends StatefulWidget {
 
 class _StreamingViewState extends State<StreamingView> {
   final VlcPlayerController _vlcViewController = VlcPlayerController.network(
-    "rtmp://52.79.237.154/live/test",
+    "rtmp://3.34.97.138/live-out",
     autoPlay: true,
   );
 
