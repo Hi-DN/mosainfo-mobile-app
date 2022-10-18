@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:apivideo_live_stream/apivideo_live_stream.dart';
 import 'package:flutter/services.dart';
+import 'package:mosainfo_mobile_app/src/api/http_client.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
 import 'package:mosainfo_mobile_app/src/types/params.dart';
@@ -25,7 +26,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   late final Future<int> textureId;
   late BuildContext? _context;
 
-  String rtmpUrl = "rtmp://54.180.150.130/live";
+  String rtmpUrl = "${HttpClient.rtmpUrl}/live";
   late final int processId;
   late final String streamKey;
 
