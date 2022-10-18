@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:mosainfo_mobile_app/src/api/http_client.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 
@@ -13,36 +16,70 @@ class StreamingView extends StatefulWidget {
 }
 
 class _StreamingViewState extends State<StreamingView> {
-  late VlcPlayerController _vlcViewController;
+  late final VlcPlayerController _vlcPlayerController;
+  late BuildContext? _context;
 
-  bool isStarted = true;
+  bool _isLoading = true;
+  Timer? timer;
 
   @override
   void initState() {
-    _vlcViewController = VlcPlayerController.network(
-      // "${HttpClient.rtmpUrl}/live-out/${widget.processId}",
-      "rtmp://43.201.75.227/live/${widget.processId}",
-      autoPlay: true,
-      options: VlcPlayerOptions()
-      // onInit:() { 
-      //   setState(() {
-      //     isStarted = true;
-      //   });
-      // }
+    _vlcPlayerController = VlcPlayerController.network(
+      "${HttpClient.rtmpUrl}/live-out/${widget.processId}",
+      autoPlay: true
     );
+
+    timer = Timer.periodic(const Duration(seconds: 3), (Timer t) => _checkLoading());
 
     super.initState();
   }
 
-  _vlcInitListener() {
-    setState(() {
-          isStarted = true;
-        });
+  void _checkLoading() async {
+    if(!_isLoading) {
+      debugPrint("isLoading false so stop timer()");
+      // timer!.cancel();
+    }
+
+    debugPrint("_checkLoading()");
+    if(_vlcPlayerController.value.isInitialized){
+      debugPrint("isInitialized");
+      _vlcPlayerController.play();
+
+      bool? isPlaying = await _vlcPlayerController.isPlaying();
+      debugPrint("isPlaying? $isPlaying");
+
+      setState(() {
+        debugPrint("isLoading false");
+        if(isPlaying!) _isLoading = false;  
+        // timer?.cancel();
+      });
+    }
+  }
+
+  _showWarningDialog() {
+    return showDialog(
+      context: _context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const R14Text(text: "스트리밍이 종료되었습니다."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () { 
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const R14Text(text: "확인"),
+            ),
+          ],
+        );
+      }
+    );
   }
 
   @override
   void dispose() {
-    _vlcViewController.dispose();
+    timer?.cancel();
+    _vlcPlayerController.dispose();
     super.dispose();
   }
   
@@ -52,67 +89,39 @@ class _StreamingViewState extends State<StreamingView> {
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
 
-    
+    _context = context;
 
     return Scaffold(
-              appBar: AppBar(
-                title: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy),
-                backgroundColor: white,
-                leading: _arrowBackLeadingIcon()
-              ),
-              body: Center(
-                child: Container(
-                  color: white,
-                  width: screenWidth, height: screenHeight,
-                  child: _vlcViewController.value == VlcPlayerValue.uninitialized()
-                  ? const Center(child: CircularProgressIndicator())
-                  : VlcPlayer(
-                    controller: _vlcViewController, 
-                    aspectRatio: screenWidth / screenHeight,
-                    placeholder: const Center(child: Text("Please Wait")))
-                )
-              )
-            );    
-
-    // return FutureBuilder<bool?>(
-    //   future: _vlcViewController.isPlaying(),
-    //   builder: (context, snapshot) {
-    //     if(snapshot.hasData) {
-    //       bool isPlaying = snapshot.data!;
-    //       return Scaffold(
-    //           appBar: AppBar(
-    //             title: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy),
-    //             backgroundColor: white,
-    //             leading: _arrowBackLeadingIcon()
-    //           ),
-    //           body: Center(
-    //             child: Container(
-    //               color: white,
-    //               width: screenWidth, height: screenHeight,
-    //               child: isPlaying
-    //               ? VlcPlayer(
-    //                 controller: _vlcViewController, 
-    //                 aspectRatio: screenWidth / screenHeight,
-    //                 placeholder: const Center(child: CircularProgressIndicator()))
-    //               : const Center(child: CircularProgressIndicator())
-    //             )
-    //           )
-    //         );    
-    //     } else {
-    //       return Scaffold(
-    //           appBar: AppBar(
-    //             title: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy),
-    //             backgroundColor: white,
-    //             leading: _arrowBackLeadingIcon()
-    //           ),
-    //           body: const Center(
-    //             child: Center(child: CircularProgressIndicator())
-    //           )
-    //         );    
-    //     }
-    //   },
-    // );
-    
+      appBar: AppBar(
+        title: GestureDetector(
+          onTap: (() async { 
+            // debugPrint(_vlcPlayerController.value.isInitialized.toString());
+            bool? isPlaying = await _vlcPlayerController.isPlaying();
+            debugPrint(isPlaying.toString());
+          }),
+          child: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy)),
+        backgroundColor: white,
+        leading: _arrowBackLeadingIcon()
+      ),
+      body: Center(
+        child: Container(
+          color: white,
+          width: screenWidth, height: screenHeight,
+          child: Stack(
+            fit: StackFit.passthrough,
+            children: [
+              VlcPlayer(
+                controller: _vlcPlayerController, 
+                aspectRatio: screenWidth / screenHeight,
+                placeholder: const Center(child: Text("Please Wait"))),
+              _isLoading 
+              ? const Center(child: CircularProgressIndicator())
+              : Container()
+            ],
+          )
+        )
+      )
+    );
   }
 
   Widget _arrowBackLeadingIcon() {
