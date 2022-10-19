@@ -104,7 +104,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
           padding: const EdgeInsets.only(left: 14),
           child: GestureDetector(
               onTap: () {
-                  Navigator.pop(context);
+                _showEndingConfirmDialog();
               },
               child: const Icon(Icons.arrow_back, color: greyNavy)),
     );
@@ -165,7 +165,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
             color: black,
             onPressed:
                 liveStreamController.isStreaming
-                    ? onStopStreamingButtonPressed
+                    ? _showEndingConfirmDialog
                     : null,
           ),
         ],
@@ -225,7 +225,6 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       await liveStreamController.startStreaming(
         streamKey: streamKey, url: rtmpUrl
       );
-      // Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
     } catch (error) {
       if (error is PlatformException) {
         debugPrint("Error: failed to start stream: ${error.message}");
@@ -275,7 +274,6 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     startStreaming().then((_) {
       if (mounted) {
         setState(() {
-          debugPrint("스타트 모자이크");
           Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
         });
       }
@@ -285,7 +283,9 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   void onStopStreamingButtonPressed() {
     stopStreaming().then((_) {
       if (mounted) {
-        setState(() {});
+        setState(() {
+          Provider.of<ProcessProvider>(_context!, listen: false).releaseProcess(processId);
+        });
       }
     });
   }
@@ -310,5 +310,30 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     // ignore: deprecated_member_use
     _scaffoldKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
   }
+
+  _showEndingConfirmDialog() {
+    return showDialog(
+      context: _context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const R14Text(text: "스트리밍을 종료하시겠습니까?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const R14Text(text: "아니요", textColor: Colors.black12),
+            ),
+            TextButton(
+              onPressed: () { 
+                onStopStreamingButtonPressed();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const R14Text(text: "네, 종료할게요!", textColor: Colors.blue),
+            ),
+          ],
+        );
+      }
+    );
   }
+}
   

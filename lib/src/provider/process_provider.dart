@@ -26,4 +26,9 @@ class ProcessProvider with ChangeNotifier {
     bool? result = await _processService.startMosaic(processId);
     return result;
   }
+
+  Future<bool?> releaseProcess(int processId) async {
+    bool? result = await _processService.releaseProcess(processId);
+    return result;
+  }
 }

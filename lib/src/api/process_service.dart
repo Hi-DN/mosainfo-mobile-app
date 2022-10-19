@@ -37,5 +37,16 @@ class ProcessService {
       return false;
     }
   }
+
+  // 프로세스 릴리즈하기
+  Future<bool?> releaseProcess(int processId) async {
+    Map<String, dynamic> data = await _httpClient.getRequest('/release/$processId');
+
+    if (data['result'] == 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
