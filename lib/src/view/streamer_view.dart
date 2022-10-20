@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:apivideo_live_stream/apivideo_live_stream.dart';
 import 'package:flutter/services.dart';
+import 'package:mosainfo_mobile_app/src/api/http_client.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
 import 'package:mosainfo_mobile_app/src/types/params.dart';
@@ -25,7 +26,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   late final Future<int> textureId;
   late BuildContext? _context;
 
-  String rtmpUrl = "rtmp://13.125.225.121/live";
+  String rtmpUrl = "${HttpClient.rtmpUrl}/live";
   late final int processId;
   late final String streamKey;
 
@@ -273,8 +274,10 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   void onStartStreamingButtonPressed() {
     startStreaming().then((_) {
       if (mounted) {
-        setState(() {});
-        Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
+        setState(() {
+          debugPrint("스타트 모자이크");
+          Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
+        });
       }
     });
   }

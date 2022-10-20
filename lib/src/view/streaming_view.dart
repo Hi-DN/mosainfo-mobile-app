@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:mosainfo_mobile_app/src/api/http_client.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 
@@ -18,7 +19,7 @@ class _StreamingViewState extends State<StreamingView> {
   @override
   void initState() {
     _vlcViewController = VlcPlayerController.network(
-      "rtmp://13.125.225.121/live-out/${widget.processId}",
+      "${HttpClient.rtmpUrl}/live-out/${widget.processId}",
       autoPlay: true,
     );
     super.initState();
@@ -42,7 +43,11 @@ class _StreamingViewState extends State<StreamingView> {
           child: VlcPlayer(
             controller: _vlcViewController, 
             aspectRatio: screenWidth / screenHeight,
-            placeholder: const Text("Please Wait:)"),),
+            placeholder: Container(
+              width: 200,
+              height: 200,
+              color: Colors.red,
+              child: const Text("Please Wait:)")),),
         )
       )
     );

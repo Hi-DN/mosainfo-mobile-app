@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Mosainfo Mobile App</string>
+	<string>Mosainfo Mobile App2</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -35,8 +35,12 @@
 	<array>
 		<string>_googlecast._tcp</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Your own description of the purpose</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Used to search for chromecast devices</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Your own description of the purpose</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -58,9 +62,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Your own description of the purpose</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Your own description of the purpose</string>
 </dict>
 </plist>
