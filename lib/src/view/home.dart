@@ -48,7 +48,8 @@ class Home extends StatelessWidget {
         ProcessModel? process = await Provider.of<ProcessProvider>(_context!, listen: false).getNewProcess();
         // ignore: use_build_context_synchronously
         Navigator.push(_context!,
-          MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: process!.id!)));
+          MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: process!.id!)))
+          .then((_) => Provider.of<ProcessProvider>(_context!, listen: false).fetchProcessList());
       },
       child: Container(
         color: greyNavy,
@@ -89,7 +90,10 @@ class ProcessListSection extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => StreamingView(processId: processId)));
+              MaterialPageRoute(builder: (context) => StreamingView(processId: processId)))
+              .then((_) => Provider.of<ProcessProvider>(context, listen: false).fetchProcessList());
+              // if(needRefresh) {
+              // Provider.of<ProcessProvider>(context, listen: false).fetchProcessList();
           },
           child: Container(
             padding: const EdgeInsets.all(30),
