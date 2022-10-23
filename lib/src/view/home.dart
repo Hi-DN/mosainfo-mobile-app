@@ -92,6 +92,8 @@ class ProcessListSection extends StatelessWidget {
             Navigator.push(context,
               MaterialPageRoute(builder: (context) => StreamingView(processId: processId)))
               .then((_) => Provider.of<ProcessProvider>(context, listen: false).fetchProcessList());
+              // if(needRefresh) {
+              // Provider.of<ProcessProvider>(context, listen: false).fetchProcessList();
           },
           child: Container(
             padding: const EdgeInsets.all(30),

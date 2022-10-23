@@ -20,6 +20,7 @@ class _StreamingViewState extends State<StreamingView> {
   late BuildContext? _context;
 
   bool _isLoading = true;
+  bool _isTimerOn = true;
   Timer? timer;
 
   @override
@@ -37,7 +38,8 @@ class _StreamingViewState extends State<StreamingView> {
   void _checkLoading() async {
     if(!_isLoading) {
       debugPrint("isLoading false so stop timer()");
-      // timer!.cancel();
+      // timer!.cancel(); // 화면 멈춤 오류
+      _isTimerOn = false;
     }
 
     debugPrint("_checkLoading()");
@@ -53,6 +55,11 @@ class _StreamingViewState extends State<StreamingView> {
         if(isPlaying!) _isLoading = false;  
         // timer?.cancel();
       });
+    }
+
+    if(_vlcPlayerController.value.isEnded) {
+      debugPrint("isEnded");
+      _showWarningDialog();
     }
   }
 
@@ -78,7 +85,7 @@ class _StreamingViewState extends State<StreamingView> {
 
   @override
   void dispose() {
-    timer?.cancel();
+    if(_isTimerOn) timer?.cancel();
     _vlcPlayerController.dispose();
     super.dispose();
   }
@@ -93,13 +100,7 @@ class _StreamingViewState extends State<StreamingView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: (() async { 
-            // debugPrint(_vlcPlayerController.value.isInitialized.toString());
-            bool? isPlaying = await _vlcPlayerController.isPlaying();
-            debugPrint(isPlaying.toString());
-          }),
-          child: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy)),
+        title: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy),
         backgroundColor: white,
         leading: _arrowBackLeadingIcon()
       ),
@@ -126,12 +127,12 @@ class _StreamingViewState extends State<StreamingView> {
 
   Widget _arrowBackLeadingIcon() {
     return Padding(
-          padding: const EdgeInsets.only(left: 14),
-          child: GestureDetector(
-              onTap: () {
-                  Navigator.pop(context);
-              },
-              child: const Icon(Icons.arrow_back, color: greyNavy)),
+      padding: const EdgeInsets.only(left: 14),
+      child: GestureDetector(
+          onTap: () {
+              Navigator.pop(context);
+          },
+          child: const Icon(Icons.arrow_back, color: greyNavy)),
     );
   }
 }
