@@ -20,7 +20,8 @@ class _StreamingViewState extends State<StreamingView> {
   late BuildContext? _context;
 
   bool _isLoading = true;
-  bool _isTimerOn = true;
+  final bool _isEnded = false;
+  final bool _isTimerOn = true;
   Timer? timer;
 
   @override
@@ -39,10 +40,11 @@ class _StreamingViewState extends State<StreamingView> {
     if(!_isLoading) {
       debugPrint("isLoading false so stop timer()");
       // timer!.cancel(); // 화면 멈춤 오류
-      _isTimerOn = false;
+      // _isTimerOn = false;
     }
 
     debugPrint("_checkLoading()");
+
     if(_vlcPlayerController.value.isInitialized){
       debugPrint("isInitialized");
       _vlcPlayerController.play();
@@ -55,12 +57,17 @@ class _StreamingViewState extends State<StreamingView> {
         if(isPlaying!) _isLoading = false;  
         // timer?.cancel();
       });
-    }
 
-    if(_vlcPlayerController.value.isEnded) {
-      debugPrint("isEnded");
-      _showWarningDialog();
-    }
+      
+    } 
+
+    if(_vlcPlayerController.value.isInitialized) {
+        bool? isPlaying = await _vlcPlayerController.isPlaying();
+        if(!isPlaying!){
+          debugPrint("isEnded");
+          _showWarningDialog();
+        }
+      }
   }
 
   _showWarningDialog() {

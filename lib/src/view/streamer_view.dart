@@ -274,17 +274,19 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     startStreaming().then((_) {
       if (mounted) {
         setState(() {
-          Provider.of<ProcessProvider>(_context!, listen: false).startMosaic(processId);
+          Provider.of<StreamingProvider>(_context!, listen: false).startMosaic(processId);
         });
       }
     });
   }
 
   void onStopStreamingButtonPressed() {
-    stopStreaming().then((_) {
+    stopStreaming().then((_) async {
       if (mounted) {
+        bool? result = await Provider.of<StreamingProvider>(_context!, listen: false).releaseProcess(processId);
+        debugPrint(result!.toString());
         setState(() {
-          Provider.of<ProcessProvider>(_context!, listen: false).releaseProcess(processId);
+          if(result) Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
         });
       }
     });

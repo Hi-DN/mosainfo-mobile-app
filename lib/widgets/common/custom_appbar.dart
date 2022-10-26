@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
-import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 const CustomAppBar({Key? key, this.leadingYn=false, this.titleTxt='Mosainfo'}) : 
@@ -15,7 +15,6 @@ const CustomAppBar({Key? key, this.leadingYn=false, this.titleTxt='Mosainfo'}) :
   Widget build(context) {
 
     return AppBar(
-        leadingWidth: 0,
         leading: leadingYn ?? false
             ? Padding(
                 padding: const EdgeInsets.only(left: 14),
@@ -24,7 +23,12 @@ const CustomAppBar({Key? key, this.leadingYn=false, this.titleTxt='Mosainfo'}) :
                     child: const Icon(Icons.arrow_back, color: Color.fromRGBO(153, 153, 153, 1))),
               )
             : Container(),
-        backgroundColor: white,
-        title: Text(titleTxt!, style: styleBGreyNavy));
+        backgroundColor: greyNavy,
+        elevation: 0.0,
+        title: SvgPicture.asset(
+            'assets/images/logo.svg',
+            height: 30
+          ),
+        );
   }
 }

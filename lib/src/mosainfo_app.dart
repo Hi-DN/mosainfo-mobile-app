@@ -10,7 +10,7 @@ class MosainfoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => ProcessProvider()),
+          ChangeNotifierProvider(create: (context) => StreamingProvider()),
         ],
         child: MaterialApp(
           title: 'Mosainfo',

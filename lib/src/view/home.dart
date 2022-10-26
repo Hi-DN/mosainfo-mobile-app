@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mosainfo_mobile_app/src/api/process_model.dart';
+import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
-import 'package:mosainfo_mobile_app/src/view/streamer_view.dart';
 import 'package:mosainfo_mobile_app/src/view/streaming_view.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
+
+import 'new_streaming_modal.dart';
 
 
 // ignore: must_be_immutable
@@ -17,16 +18,48 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    Provider.of<ProcessProvider>(context, listen: false).fetchProcessList();
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: Column(
-        children: [
-          _newProcessBtn(),
-          const SizedBox(height: 20),
-          Expanded(child: _scrollNotificationWidget())
-        ],
-      )
+    Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: const CustomAppBar(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: greyNavy,
+          child: const Icon(Icons.add),
+          onPressed: () async {
+            _showNewStreamingModal();
+            // StreamingModel? process = await Provider.of<StreamingProvider>(_context!, listen: false).createStreaming();
+          // ignore: use_build_context_synchronously
+          // Navigator.push(_context!,
+          //   MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: process!.id!)));
+          }
+        ),
+        body: Column(
+          children: [
+            _newProcessBtn(),
+            const SizedBox(height: 20),
+            Expanded(child: _scrollNotificationWidget())
+          ],
+        )
+      ),
+    );
+  }
+
+  _showNewStreamingModal() {
+    final viewModel = Provider.of<StreamingProvider>(_context!, listen: false);
+    
+    showModalBottomSheet(
+      context: _context!,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30), 
+          topRight: Radius.circular(30)),
+      ),
+      builder: (context) {
+        return ChangeNotifierProvider.value(value: viewModel, child: const NewStreamingModal());
+      }
     );
   }
 
@@ -37,7 +70,7 @@ class Home extends StatelessWidget {
             
             displacement: 22,
             onRefresh: () async {
-              Provider.of<ProcessProvider>(_context!, listen: false).fetchProcessList();
+              Provider.of<StreamingProvider>(_context!, listen: false).fetchProcessList();
             },
             child: const ProcessListSection()));
   }
@@ -45,11 +78,10 @@ class Home extends StatelessWidget {
   Widget _newProcessBtn() {
     return GestureDetector(
       onTap: () async {
-        ProcessModel? process = await Provider.of<ProcessProvider>(_context!, listen: false).getNewProcess();
+        // StreamingModel? process = await Provider.of<StreamingProvider>(_context!, listen: false).getNewProcess();
         // ignore: use_build_context_synchronously
-        Navigator.push(_context!,
-          MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: process!.id!)))
-          .then((_) => Provider.of<ProcessProvider>(_context!, listen: false).fetchProcessList());
+        // Navigator.push(_context!,
+        //   MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: process!.id!)));
       },
       child: Container(
         color: greyNavy,
@@ -78,22 +110,20 @@ class ProcessListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProcessProvider>(builder: (context, provider, widget) {
-      return _processListView(provider.processList);
+    return Consumer<StreamingProvider>(builder: (context, provider, widget) {
+      return _processListView(provider.streamingList);
     });
   }
 
-  _processListView(List<ProcessModel> processList) {
+  _processListView(List<StreamingModel> streamingList) {
     return ListView.separated(
       itemBuilder: ((context, index) {
-        int processId = processList[index].id!;
+        int streamingId = streamingList[index].id!;
         return GestureDetector(
           onTap: () {
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => StreamingView(processId: processId)))
-              .then((_) => Provider.of<ProcessProvider>(context, listen: false).fetchProcessList());
-              // if(needRefresh) {
-              // Provider.of<ProcessProvider>(context, listen: false).fetchProcessList();
+              MaterialPageRoute(builder: (context) => StreamingView(processId: streamingId)))
+              .then((_) => Provider.of<StreamingProvider>(context, listen: false).fetchProcessList());
           },
           child: Container(
             padding: const EdgeInsets.all(30),
@@ -102,7 +132,7 @@ class ProcessListSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "스트림 ID: $processId",
+                  "스트림 ID: $streamingId",
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -114,7 +144,7 @@ class ProcessListSection extends StatelessWidget {
           ),
         );
       }),
-      itemCount: processList.length,
+      itemCount: streamingList.length,
       separatorBuilder: (context, index) => const Divider(),
     );
   }
