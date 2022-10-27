@@ -35,6 +35,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
 
   late StreamingModel streaming;
 
+  bool _isInitial = true;
   bool _isStreamingInfoOn = true;
 
   @override
@@ -101,7 +102,6 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
             ),
             _isStreamingInfoOn
             ? Container(
-              // height: double.infinity,
               alignment: Alignment.bottomCenter,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -111,8 +111,16 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                 )
               ),
               child: _streamingInfo()
-            )
-            : Container()
+            ) : Container(),
+            _isInitial
+            ? Center(child: 
+              Container(
+                padding: const EdgeInsets.all(5),
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.circular(5),
+                //   color: black.withOpacity(20)
+                // ),
+                child: const Text("준비되시면 아래 시작 버튼을 눌러주세요:)", style: TextStyle(color: white)))) : Container()
           ],
         )
       )
@@ -339,6 +347,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       if (mounted) {
         setState(() {
           Provider.of<StreamingProvider>(_context!, listen: false).startMosaic(streamingId);
+          _isInitial = false;
         });
       }
     });
@@ -350,12 +359,11 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
         bool? result = await Provider.of<StreamingProvider>(_context!, listen: false).releaseProcess(streamingId);
         debugPrint(result!.toString());
         if(result) {
-          Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
+          Provider.of<StreamingProvider>(context, listen: false).fetchStreamingList();
           Navigator.of(context).pop();
           Navigator.of(context).pop();
         } 
         setState(() {
-          // if(result) Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
         });
       }
     });

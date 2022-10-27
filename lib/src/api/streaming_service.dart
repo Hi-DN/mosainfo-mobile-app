@@ -48,5 +48,16 @@ class StreamingService {
       return false;
     }
   }
+
+  // 특정 id로 스트리밍 진행여부 확인
+  Future<bool?> checkStreaming(int streamingId) async {
+    Map<String, dynamic> data = await _httpClient.getRequest('/streaming/$streamingId');
+
+    if (data['result'] == 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 

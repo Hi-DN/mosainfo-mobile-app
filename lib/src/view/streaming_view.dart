@@ -6,9 +6,11 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:mosainfo_mobile_app/src/api/http_client.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
+import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
+import 'package:provider/provider.dart';
 
 class StreamingView extends StatefulWidget {
   const StreamingView({Key? key, required this.streaming}) : super(key: key);
@@ -25,8 +27,8 @@ class _StreamingViewState extends State<StreamingView> {
   late StreamingModel streaming;
 
   bool _isLoading = true;
-  final bool _isEnded = false;
   final bool _isTimerOn = true;
+  bool _isWarningDialogOpen = false;
   Timer? timer;
 
   bool _isStreamingInfoOn = true;
@@ -39,7 +41,7 @@ class _StreamingViewState extends State<StreamingView> {
       autoPlay: true
     );
 
-    timer = Timer.periodic(const Duration(seconds: 3), (Timer t) => _checkLoading());
+    timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => _checkLoading());
 
     super.initState();
   }
@@ -48,7 +50,6 @@ class _StreamingViewState extends State<StreamingView> {
     if(!_isLoading) {
       debugPrint("isLoading false so stop timer()");
       // timer!.cancel(); // 화면 멈춤 오류
-      // _isTimerOn = false;
     }
 
     debugPrint("_checkLoading()");
@@ -63,19 +64,19 @@ class _StreamingViewState extends State<StreamingView> {
       setState(() {
         debugPrint("isLoading false");
         if(isPlaying!) _isLoading = false;  
-        // timer?.cancel();
       });
 
       
     } 
 
     if(_vlcPlayerController.value.isInitialized) {
-        bool? isPlaying = await _vlcPlayerController.isPlaying();
-        if(!isPlaying!){
-          debugPrint("isEnded");
-          _showWarningDialog();
-        }
+      bool? isStillPlaying = await Provider.of<StreamingProvider>(context, listen: false).checkStreaming(streaming.id!);
+      if(!_isWarningDialogOpen && !isStillPlaying!) {
+        debugPrint("isEnded");
+        _isWarningDialogOpen = true;
+        _showWarningDialog();
       }
+    }
   }
 
   _showWarningDialog() {
@@ -87,6 +88,7 @@ class _StreamingViewState extends State<StreamingView> {
           actions: <Widget>[
             TextButton(
               onPressed: () { 
+                Provider.of<StreamingProvider>(context, listen: false).fetchStreamingList();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },

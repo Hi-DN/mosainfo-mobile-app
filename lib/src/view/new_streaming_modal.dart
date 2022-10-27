@@ -159,7 +159,7 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
         } else {
           StreamingModel? streaming = await Provider.of<StreamingProvider>(context, listen: false).createStreaming(_selectedCategoryId, _title!);
           if(streaming != null) {
-            Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
+            // Provider.of<StreamingProvider>(context, listen: false).fetchStreamingList();
             Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (BuildContext context) => StreamerView(streaming: streaming)));
           }

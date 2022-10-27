@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
+import 'package:mosainfo_mobile_app/src/view/no_streaming_screen.dart';
 import 'package:mosainfo_mobile_app/src/view/streaming_view.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
@@ -20,7 +21,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
+    Provider.of<StreamingProvider>(context, listen: false).fetchStreamingList();
     return Scaffold(
       appBar: const CustomAppBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -62,7 +63,7 @@ class Home extends StatelessWidget {
       child: RefreshIndicator(
         displacement: 22,
         onRefresh: () async {
-          Provider.of<StreamingProvider>(_context!, listen: false).fetchProcessList();
+          Provider.of<StreamingProvider>(_context!, listen: false).fetchStreamingList();
         },
         child: const ProcessListSection()));
   }
@@ -74,7 +75,7 @@ class ProcessListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<StreamingProvider>(builder: (context, provider, widget) {
-      return _processListView(provider.streamingList);
+      return provider.hasData ? _processListView(provider.streamingList) : const NoStreamingScreen();
     });
   }
 
@@ -85,8 +86,7 @@ class ProcessListSection extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => StreamingView(streaming: streaming)))
-              .then((_) => Provider.of<StreamingProvider>(context, listen: false).fetchProcessList());
+              MaterialPageRoute(builder: (context) => StreamingView(streaming: streaming)));
           },
           child: Container(
             padding: const EdgeInsets.only(left:18, top: 10, right: 18, bottom: 10),
