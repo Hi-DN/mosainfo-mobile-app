@@ -19,30 +19,22 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: const CustomAppBar(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: greyNavy,
-          child: const Icon(Icons.add),
-          onPressed: () async {
-            _showNewStreamingModal();
-            // StreamingModel? process = await Provider.of<StreamingProvider>(_context!, listen: false).createStreaming();
-          // ignore: use_build_context_synchronously
-          // Navigator.push(_context!,
-          //   MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: process!.id!)));
-          }
-        ),
-        body: Column(
-          children: [
-            _newProcessBtn(),
-            const SizedBox(height: 20),
-            Expanded(child: _scrollNotificationWidget())
-          ],
-        )
+    return Scaffold(
+      appBar: const CustomAppBar(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: greyNavy,
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          _showNewStreamingModal();
+        }
       ),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Expanded(child: _scrollNotificationWidget())
+        ],
+      )
     );
   }
 

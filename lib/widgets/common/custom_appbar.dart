@@ -15,20 +15,20 @@ const CustomAppBar({Key? key, this.leadingYn=false, this.titleTxt='Mosainfo'}) :
   Widget build(context) {
 
     return AppBar(
-        leading: leadingYn ?? false
-            ? Padding(
-                padding: const EdgeInsets.only(left: 14),
-                child: GestureDetector(
-                    onTap: () {Navigator.of(context).pop();},
-                    child: const Icon(Icons.arrow_back, color: Color.fromRGBO(153, 153, 153, 1))),
-              )
-            : Container(),
-        backgroundColor: greyNavy,
-        elevation: 0.0,
-        title: SvgPicture.asset(
-            'assets/images/logo.svg',
-            height: 30
-          ),
-        );
+      leading: leadingYn ?? false
+        ? Padding(
+            padding: const EdgeInsets.only(left: 14),
+            child: GestureDetector(
+                onTap: () {Navigator.of(context).pop();},
+                child: const Icon(Icons.arrow_back, color: Color.fromRGBO(153, 153, 153, 1))),
+          )
+        : Container(),
+      backgroundColor: greyNavy,
+      elevation: 0.0,
+      title: SvgPicture.asset(
+          'assets/images/logo.svg',
+          height: 30
+        ),
+    );
   }
 }

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
-  final String baseUrl = 'http://35cf-34-142-152-37.ngrok.io';
+  final String baseUrl = 'http://9f70-34-143-217-125.ngrok.io';
   static const String rtmpUrl = 'rtmp://43.201.75.227';
 
   String accessToken = '';
