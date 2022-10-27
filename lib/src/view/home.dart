@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
-import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
+import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
 import 'package:mosainfo_mobile_app/src/view/streaming_view.dart';
+import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +34,7 @@ class Home extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: 20),
-          Expanded(child: _scrollNotificationWidget())
+          Expanded(child: _streamingListSection())
         ],
       )
     );
@@ -55,45 +57,14 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _scrollNotificationWidget() {
-    
+  Widget _streamingListSection() {
     return NotificationListener<ScrollNotification>(
-        child: RefreshIndicator(
-            
-            displacement: 22,
-            onRefresh: () async {
-              Provider.of<StreamingProvider>(_context!, listen: false).fetchProcessList();
-            },
-            child: const ProcessListSection()));
-  }
-
-  Widget _newProcessBtn() {
-    return GestureDetector(
-      onTap: () async {
-        // StreamingModel? process = await Provider.of<StreamingProvider>(_context!, listen: false).getNewProcess();
-        // ignore: use_build_context_synchronously
-        // Navigator.push(_context!,
-        //   MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: process!.id!)));
-      },
-      child: Container(
-        color: greyNavy,
-        height: 100,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.add, color: white, size: 28,),
-            Text(
-              " New Stream", 
-              style: TextStyle(
-                color: white,
-                fontSize: 20,
-              ),
-            )
-          ],
-        ),
-      ),
-      
-    );
+      child: RefreshIndicator(
+        displacement: 22,
+        onRefresh: () async {
+          Provider.of<StreamingProvider>(_context!, listen: false).fetchProcessList();
+        },
+        child: const ProcessListSection()));
   }
 }
 
@@ -110,27 +81,49 @@ class ProcessListSection extends StatelessWidget {
   _processListView(List<StreamingModel> streamingList) {
     return ListView.separated(
       itemBuilder: ((context, index) {
-        int streamingId = streamingList[index].id!;
+        StreamingModel streaming = streamingList[index];
         return GestureDetector(
           onTap: () {
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => StreamingView(processId: streamingId)))
+              MaterialPageRoute(builder: (context) => StreamingView(streaming: streaming)))
               .then((_) => Provider.of<StreamingProvider>(context, listen: false).fetchProcessList());
           },
           child: Container(
-            padding: const EdgeInsets.all(30),
-            height: 90,
+            padding: const EdgeInsets.only(left:18, top: 10, right: 18, bottom: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "스트림 ID: $streamingId",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40),
+                      border: Border.all(color: greyNavy, width: 2.0),
+                    ),
+                  child: SvgPicture.asset(
+                    StreamingCategory.getIconFileById(streaming.categoryId!),
+                    height: 36, 
+                    width: 36
                   ),
                 ),
-                const Icon(Icons.arrow_forward_ios)
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        streaming.title!,
+                        softWrap: true,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text("${streaming.startTime!.replaceFirst('T', ' ')} ~")
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward_ios, size: 20)
               ],
             ),
           ),

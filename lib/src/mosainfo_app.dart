@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
+import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
 import 'package:mosainfo_mobile_app/src/view/home.dart';
 import 'package:provider/provider.dart';
 

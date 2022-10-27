@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
-import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
+import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
 import 'package:mosainfo_mobile_app/src/view/streamer_view.dart';
+import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:provider/provider.dart';
 
 class NewStreamingModal extends StatefulWidget {
@@ -104,27 +105,27 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
     return Wrap(
       runSpacing: 10,
       children: [
-        _categoryTile(0, "기본", "assets/images/video-player.svg"),
-        _categoryTile(1, "먹방", "assets/images/drink-tea.svg"),
-        _categoryTile(2, "일상", "assets/images/rock-on.svg"),
-        _categoryTile(3, "여행", "assets/images/air-balloon.svg"),
-        _categoryTile(4, "영화", "assets/images/video-camera.svg"),
-        _categoryTile(5, "음악", "assets/images/cd-music.svg"),
-        _categoryTile(6, "술방", "assets/images/drink-cocktail.svg"),
-        _categoryTile(7, "언박싱", "assets/images/diamond.svg"),
-        _categoryTile(8, "공부", "assets/images/ipad.svg"),
-        _categoryTile(9, "쇼핑", "assets/images/shopping-cart.svg"),
-        _categoryTile(10, "기타", "assets/images/comment.svg"),
+        _categoryTile(StreamingCategory.values[0]),
+        _categoryTile(StreamingCategory.values[1]),
+        _categoryTile(StreamingCategory.values[2]),
+        _categoryTile(StreamingCategory.values[3]),
+        _categoryTile(StreamingCategory.values[4]),
+        _categoryTile(StreamingCategory.values[5]),
+        _categoryTile(StreamingCategory.values[6]),
+        _categoryTile(StreamingCategory.values[7]),
+        _categoryTile(StreamingCategory.values[8]),
+        _categoryTile(StreamingCategory.values[9]),
+        _categoryTile(StreamingCategory.values[10])
       ],
     );
   }
 
-  Widget _categoryTile(int id, String name, String iconFile) {
-    bool isSelected = _selectedCategoryId == id;
+  Widget _categoryTile(StreamingCategory category) {
+    bool isSelected = _selectedCategoryId == category.id;
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedCategoryId = id;  
+          _selectedCategoryId = category.id;  
         });
       },
       child: Container(
@@ -139,11 +140,11 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
                 color: isSelected ? const Color.fromARGB(147, 127, 137, 170) : Colors.white
               ),
               child: SvgPicture.asset(
-                iconFile,
+                category.iconFile,
                 height: 30, width: 30),
             ),
             const SizedBox(height: 5),
-            Text(name)
+            Text(category.name)
           ],
         ),
       ),
@@ -160,7 +161,7 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
           if(streaming != null) {
             Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
             Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (BuildContext context) => StreamerView(processId: streaming.id!)));
+              MaterialPageRoute(builder: (BuildContext context) => StreamerView(streaming: streaming)));
           }
         }
       },
@@ -186,5 +187,4 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
       _isTitleValid = false;
     });
   }
-
 }

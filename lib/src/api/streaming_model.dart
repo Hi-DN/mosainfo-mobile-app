@@ -22,19 +22,19 @@ class Response {
 }
 
 class StreamingModel {
-  String? category;
+  int? categoryId;
   int? id;
   String? startTime;
   String? title;
 
   StreamingModel(
-      {this.category,
+      {this.categoryId,
       this.id,
       this.startTime,
       this.title});
 
   StreamingModel.fromJson(Map<String, dynamic> json) {
-    category = json['streaming_category'];
+    categoryId = int.parse(json['streaming_category'] ?? "0");
     id = json['streaming_id'];
     startTime = json['streaming_start_time'];
     title = json['streaming_title'];
@@ -42,7 +42,7 @@ class StreamingModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['streaming_category'] = category;
+    data['streaming_category'] = categoryId.toString;
     data['streaming_id'] = id;
     data['streaming_start_time'] = startTime;
     data['streaming_title'] = title;

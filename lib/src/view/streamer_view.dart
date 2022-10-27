@@ -3,18 +3,21 @@
 import 'package:flutter/material.dart';
 import 'package:apivideo_live_stream/apivideo_live_stream.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mosainfo_mobile_app/src/api/http_client.dart';
+import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
-import 'package:mosainfo_mobile_app/src/provider/process_provider.dart';
+import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
 import 'package:mosainfo_mobile_app/src/types/params.dart';
-import 'package:mosainfo_mobile_app/src/view/streamer_settings_view.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
+import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/utils/dialog.dart';
+import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
 
 class StreamerView extends StatefulWidget {
-  const StreamerView({Key? key, required this.processId}) : super(key: key);
-  final int processId;
+  const StreamerView({Key? key, required this.streaming}) : super(key: key);
+  final StreamingModel streaming;
 
   @override
   State<StreamerView> createState() => _StreamerViewState();
@@ -27,8 +30,12 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   late BuildContext? _context;
 
   String rtmpUrl = "${HttpClient.rtmpUrl}/live";
-  late final int processId;
+  late final int streamingId;
   late final String streamKey;
+
+  late StreamingModel streaming;
+
+  bool _isStreamingInfoOn = true;
 
   @override
   void initState() {
@@ -37,8 +44,9 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     _controller = initLiveStreamController();
     textureId = _controller.create(
         initialAudioConfig: config.audio, initialVideoConfig: config.video);
-    processId = widget.processId;
-    streamKey = widget.processId.toString();
+    streaming = widget.streaming;
+    streamingId = widget.streaming.id!;
+    streamKey = widget.streaming.id!.toString();
     super.initState();
   }
 
@@ -75,14 +83,13 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     _context = context;
     return Scaffold(
       key:_scaffoldKey,
-      appBar: AppBar(
-        title: Text("Stream ID: $streamKey", style: styleBGreyNavy),
-        backgroundColor: white,
-        leading: _arrowBackLeadingIcon(),
-        actions: [_settingsActionIcon()],
+      appBar: CustomAppBar(
+        leadingYn: true,
+        onTap: _showEndingConfirmDialog,
+        actions: [_appbarInfoIcon()],
       ),
       body: Center(
-        child: Column(
+        child: Stack(
           children: [
             Expanded(
               child: Padding(
@@ -92,41 +99,94 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                 ),
               ),
             ),
-            _controlRowWidget()
+            _isStreamingInfoOn
+            ? Container(
+              // height: double.infinity,
+              alignment: Alignment.bottomCenter,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [black.withOpacity(0.5), black.withOpacity(0.1), black.withOpacity(0)],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter
+                )
+              ),
+              child: _streamingInfo()
+            )
+            : Container()
           ],
         )
       )
     );
   }
 
-  Widget _arrowBackLeadingIcon() {
-    return Padding(
-          padding: const EdgeInsets.only(left: 14),
-          child: GestureDetector(
-              onTap: () {
-                _showEndingConfirmDialog();
-              },
-              child: const Icon(Icons.arrow_back, color: greyNavy)),
+  _appbarInfoIcon() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+           _isStreamingInfoOn = !_isStreamingInfoOn;
+        });
+      },
+      child: const Padding(
+        padding: EdgeInsets.all(15),
+        child: Icon(Icons.info_rounded, color: white, size: 20),
+      ),
     );
   }
 
-  Widget _settingsActionIcon() {
-    return GestureDetector(
-            onTap: () {_awaitResultFromSettingsFinal(context);},
-            child: const Padding(
-              padding: EdgeInsets.only(right: 15),
-              child: Icon(Icons.settings, color: greyNavy),
+  Widget _streamingInfo() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+          child: Row(children: [
+            Container(
+              padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: white,
+                  borderRadius: BorderRadius.circular(40),
+                  border: Border.all(color: greyNavy, width: 2.0),
+                ),
+              child: SvgPicture.asset(
+                StreamingCategory.getIconFileById(streaming.categoryId!),
+                height: 20, width: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, 
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    streaming.title!,
+                    softWrap: true,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: white
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text("${streaming.startTime!.replaceFirst('T', ' ')} ~", style: const TextStyle(color: white),)
+                ],
+              ),
+            ),
+            const SizedBox(width: 20),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isStreamingInfoOn = false;
+                });
+              },
+              child: const Icon(Icons.keyboard_arrow_down, size: 24, color: white),
             )
-          );
-  }
-
-  void _awaitResultFromSettingsFinal(BuildContext context) async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => StreamerSettingsView(params: config)));
-    _controller.setVideoConfig(config.video);
-    _controller.setAudioConfig(config.audio);
+          ]),
+        ),
+        Container(height: 2, color: white,),
+        _controlRowWidget()
+      ],
+    );
   }
 
   /// Display the control bar with buttons to take pictures and record videos.
@@ -134,27 +194,30 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     final LiveStreamController liveStreamController = _controller;
 
     return Container(
-      padding: const EdgeInsets.only(top: 10, bottom: 20),
+      padding: const EdgeInsets.only(top: 15, bottom: 10, left: 15, right: 15),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           IconButton(
             icon: const Icon(Icons.cameraswitch),
-            color: black,
+            color: white,
+            disabledColor: white.withOpacity(0.5),
             onPressed:
                 liveStreamController != null ? onSwitchCameraButtonPressed : null,
           ),
           IconButton(
             icon: const Icon(Icons.mic_off),
-            color: black,
+            color: white,
+            disabledColor: white.withOpacity(0.5),
             onPressed: liveStreamController != null
                 ? onToggleMicrophoneButtonPressed
                 : null,
           ),
           IconButton(
-            icon: const Icon(Icons.fiber_manual_record),
-            color: black,
+            icon: const Icon(Icons.play_arrow_rounded),
+            color: white,
+            disabledColor: white.withOpacity(0.5),
             onPressed:
                 !liveStreamController.isStreaming
                     ? onStartStreamingButtonPressed
@@ -162,7 +225,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
           ),
           IconButton(
             icon: const Icon(Icons.stop),
-            color: black,
+            color: white,
+            disabledColor: white.withOpacity(0.5),
             onPressed:
                 liveStreamController.isStreaming
                     ? _showEndingConfirmDialog
@@ -274,7 +338,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
     startStreaming().then((_) {
       if (mounted) {
         setState(() {
-          Provider.of<StreamingProvider>(_context!, listen: false).startMosaic(processId);
+          Provider.of<StreamingProvider>(_context!, listen: false).startMosaic(streamingId);
         });
       }
     });
@@ -283,10 +347,15 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
   void onStopStreamingButtonPressed() {
     stopStreaming().then((_) async {
       if (mounted) {
-        bool? result = await Provider.of<StreamingProvider>(_context!, listen: false).releaseProcess(processId);
+        bool? result = await Provider.of<StreamingProvider>(_context!, listen: false).releaseProcess(streamingId);
         debugPrint(result!.toString());
+        if(result) {
+          Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        } 
         setState(() {
-          if(result) Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
+          // if(result) Provider.of<StreamingProvider>(context, listen: false).fetchProcessList();
         });
       }
     });
@@ -327,8 +396,6 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
             TextButton(
               onPressed: () { 
                 onStopStreamingButtonPressed();
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
               },
               child: const R14Text(text: "네, 종료할게요!", textColor: Colors.blue),
             ),

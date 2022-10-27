@@ -18,7 +18,7 @@ class StreamingService {
 
   // 새로운 프로세스 생성
   Future<StreamingModel?> createStreaming(int categoryId, String title) async {
-    Map<String, dynamic> data = await _httpClient.postRequest('/streaming?categoryId=$categoryId&&title=$title', {});
+    Map<String, dynamic> data = await _httpClient.postRequest('/streaming?category=$categoryId&title=$title', {});
 
     if (data['result'] == 'true') {
       return StreamingModel.fromJson(data['streaming']);
