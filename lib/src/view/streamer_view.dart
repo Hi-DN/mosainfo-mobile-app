@@ -93,11 +93,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
         child: Stack(
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Center(
-                  child: buildPreview(controller: _controller),
-                ),
+              child: Center(
+                child: buildPreview(controller: _controller),
               ),
             ),
             _isStreamingInfoOn
@@ -113,14 +110,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
               child: _streamingInfo()
             ) : Container(),
             _isInitial
-            ? Center(child: 
-              Container(
-                padding: const EdgeInsets.all(5),
-                // decoration: BoxDecoration(
-                //   borderRadius: BorderRadius.circular(5),
-                //   color: black.withOpacity(20)
-                // ),
-                child: const Text("준비되시면 아래 시작 버튼을 눌러주세요:)", style: TextStyle(color: white)))) : Container()
+            ? const Center(child: 
+              Text("준비되시면 아래 시작 버튼을 눌러주세요:)", style: TextStyle(color: white))) : Container()
           ],
         )
       )
@@ -192,7 +183,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
           ]),
         ),
         Container(height: 2, color: white,),
-        _controlRowWidget()
+        _controlRowWidget(),
+        const SizedBox(width: 10),
       ],
     );
   }
@@ -380,7 +372,16 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
               child: CircularProgressIndicator(),
             );
           } else {
-            return CameraPreview(controller: controller);
+
+            return SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: 720,
+                  height: 1280,
+                  child: CameraPreview(controller: controller))
+              ),
+            );
           }
         });
   }

@@ -122,23 +122,16 @@ class _StreamingViewState extends State<StreamingView> {
         actions: [_appbarInfoIcon()],
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           Center(
             child: Container(
               color: white,
               width: screenWidth, height: screenHeight,
-              child: Stack(
-                fit: StackFit.passthrough,
-                children: [
-                  VlcPlayer(
-                    controller: _vlcPlayerController, 
-                    aspectRatio: screenWidth / (screenHeight - kToolbarHeight),
-                    placeholder: const Center(child: Text("Please Wait"))),
-                  _isLoading 
-                  ? const Center(child: CircularProgressIndicator())
-                  : Container()
-                ],
-              )
+              child: VlcPlayer(
+                controller: _vlcPlayerController, 
+                aspectRatio: screenWidth / (screenHeight - kToolbarHeight),
+                placeholder: const Center(child: CircularProgressIndicator()))
             )
           ),
           _isStreamingInfoOn
@@ -153,7 +146,10 @@ class _StreamingViewState extends State<StreamingView> {
             ),
             child: _streamingInfo()
           )
-          : Container()
+          : Container(),
+          _isLoading 
+                  ? const Center(child: CircularProgressIndicator())
+                  : Container()
         ],
       )
     );
@@ -175,7 +171,7 @@ class _StreamingViewState extends State<StreamingView> {
 
   Widget _streamingInfo() {
     return Container(
-      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 25),
       child: Row(children: [
         Container(
           padding: const EdgeInsets.all(15),
