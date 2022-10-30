@@ -1,15 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:mosainfo_mobile_app/src/api/http_client.dart';
+import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
+import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
 import 'package:mosainfo_mobile_app/src/view/text_style.dart';
+import 'package:mosainfo_mobile_app/utils/category_enum.dart';
+import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
+import 'package:provider/provider.dart';
 
 class StreamingView extends StatefulWidget {
-  const StreamingView({Key? key, required this.processId}) : super(key: key);
+  const StreamingView({Key? key, required this.streaming}) : super(key: key);
 
-  final int processId;
+  final StreamingModel streaming;
 
   @override
   State<StreamingView> createState() => _StreamingViewState();
@@ -18,19 +24,24 @@ class StreamingView extends StatefulWidget {
 class _StreamingViewState extends State<StreamingView> {
   late final VlcPlayerController _vlcPlayerController;
   late BuildContext? _context;
+  late StreamingModel streaming;
 
   bool _isLoading = true;
-  bool _isTimerOn = true;
+  final bool _isTimerOn = true;
+  bool _isWarningDialogOpen = false;
   Timer? timer;
+
+  bool _isStreamingInfoOn = true;
 
   @override
   void initState() {
+    streaming = widget.streaming;
     _vlcPlayerController = VlcPlayerController.network(
-      "${HttpClient.rtmpUrl}/live-out/${widget.processId}",
+      "${HttpClient.rtmpUrl}/live-out/${widget.streaming.id}",
       autoPlay: true
     );
 
-    timer = Timer.periodic(const Duration(seconds: 3), (Timer t) => _checkLoading());
+    timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => _checkLoading());
 
     super.initState();
   }
@@ -39,10 +50,10 @@ class _StreamingViewState extends State<StreamingView> {
     if(!_isLoading) {
       debugPrint("isLoading false so stop timer()");
       // timer!.cancel(); // 화면 멈춤 오류
-      _isTimerOn = false;
     }
 
     debugPrint("_checkLoading()");
+
     if(_vlcPlayerController.value.isInitialized){
       debugPrint("isInitialized");
       _vlcPlayerController.play();
@@ -53,13 +64,18 @@ class _StreamingViewState extends State<StreamingView> {
       setState(() {
         debugPrint("isLoading false");
         if(isPlaying!) _isLoading = false;  
-        // timer?.cancel();
       });
-    }
 
-    if(_vlcPlayerController.value.isEnded) {
-      debugPrint("isEnded");
-      _showWarningDialog();
+      
+    } 
+
+    if(_vlcPlayerController.value.isInitialized) {
+      bool? isStillPlaying = await Provider.of<StreamingProvider>(context, listen: false).checkStreaming(streaming.id!);
+      if(!_isWarningDialogOpen && !isStillPlaying!) {
+        debugPrint("isEnded");
+        _isWarningDialogOpen = true;
+        _showWarningDialog();
+      }
     }
   }
 
@@ -72,6 +88,7 @@ class _StreamingViewState extends State<StreamingView> {
           actions: <Widget>[
             TextButton(
               onPressed: () { 
+                Provider.of<StreamingProvider>(context, listen: false).fetchStreamingList();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
@@ -99,40 +116,105 @@ class _StreamingViewState extends State<StreamingView> {
     _context = context;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Stream ID: ${widget.processId}", style: styleBGreyNavy),
-        backgroundColor: white,
-        leading: _arrowBackLeadingIcon()
+      appBar: CustomAppBar(
+        leadingYn: true,
+        onTap: () => Navigator.of(context).pop(),
+        actions: [_appbarInfoIcon()],
       ),
-      body: Center(
-        child: Container(
-          color: white,
-          width: screenWidth, height: screenHeight,
-          child: Stack(
-            fit: StackFit.passthrough,
-            children: [
-              VlcPlayer(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Center(
+            child: Container(
+              color: white,
+              width: screenWidth, height: screenHeight,
+              child: VlcPlayer(
                 controller: _vlcPlayerController, 
-                aspectRatio: screenWidth / screenHeight,
-                placeholder: const Center(child: Text("Please Wait"))),
-              _isLoading 
-              ? const Center(child: CircularProgressIndicator())
-              : Container()
-            ],
+                aspectRatio: screenWidth / (screenHeight - kToolbarHeight),
+                placeholder: const Center(child: CircularProgressIndicator()))
+            )
+          ),
+          _isStreamingInfoOn
+          ? Container(
+            alignment: Alignment.bottomCenter,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [black.withOpacity(0.5), black.withOpacity(0.1), black.withOpacity(0)],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter
+              )
+            ),
+            child: _streamingInfo()
           )
-        )
+          : Container(),
+          _isLoading 
+                  ? const Center(child: CircularProgressIndicator())
+                  : Container()
+        ],
       )
     );
   }
 
-  Widget _arrowBackLeadingIcon() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 14),
-      child: GestureDetector(
+  _appbarInfoIcon() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+           _isStreamingInfoOn = !_isStreamingInfoOn;
+        });
+      },
+      child: const Padding(
+        padding: EdgeInsets.all(15),
+        child: Icon(Icons.info_rounded, color: white, size: 20),
+      ),
+    );
+  }
+
+  Widget _streamingInfo() {
+    return Container(
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 25),
+      child: Row(children: [
+        Container(
+          padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: white,
+              borderRadius: BorderRadius.circular(40),
+              border: Border.all(color: greyNavy, width: 2.0),
+            ),
+          child: SvgPicture.asset(
+            StreamingCategory.getIconFileById(streaming.categoryId!),
+            height: 20, width: 20),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, 
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                streaming.title!,
+                softWrap: true,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: white
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text("${streaming.startTime!.replaceFirst('T', ' ')} ~", style: const TextStyle(color: white),)
+            ],
+          ),
+        ),
+        const SizedBox(width: 20),
+        GestureDetector(
           onTap: () {
-              Navigator.pop(context);
+            setState(() {
+              _isStreamingInfoOn = false;
+            });
           },
-          child: const Icon(Icons.arrow_back, color: greyNavy)),
+          child: const Icon(Icons.keyboard_arrow_down, size: 24, color: white),
+        )
+      ]),
     );
   }
 }
