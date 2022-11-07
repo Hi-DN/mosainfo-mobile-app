@@ -81,6 +81,7 @@ class _StreamingViewState extends State<StreamingView> {
 
   _showWarningDialog() {
     return showDialog(
+      barrierDismissible: false,
       context: _context!,
       builder: (BuildContext context) {
         return AlertDialog(

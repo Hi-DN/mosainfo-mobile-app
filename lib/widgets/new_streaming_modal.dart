@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
+import 'package:mosainfo_mobile_app/src/view/streamer_view.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:provider/provider.dart';
 
@@ -159,8 +160,8 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
           StreamingModel? streaming = await Provider.of<StreamingProvider>(context, listen: false).createStreaming(_selectedCategoryId, _title!);
           if(streaming != null) {
             // Provider.of<StreamingProvider>(context, listen: false).fetchStreamingList();
-            // Navigator.pushReplacement(context,
-            //   MaterialPageRoute(builder: (BuildContext context) => StreamerView(streaming: streaming)));
+            Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (BuildContext context) => StreamerView(streaming: streaming)));
           }
         }
       },
