@@ -9,7 +9,7 @@ import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
 import 'package:mosainfo_mobile_app/src/types/params.dart';
-import 'package:mosainfo_mobile_app/src/view/text_style.dart';
+import 'package:mosainfo_mobile_app/widgets/common/text_style.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/utils/dialog.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
@@ -37,6 +37,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
 
   bool _isInitial = true;
   bool _isStreamingInfoOn = true;
+  bool _isStreamingStarted = false;
+  bool _isMosaicOn = true;
 
   @override
   void initState() {
@@ -214,7 +216,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                 ? onToggleMicrophoneButtonPressed
                 : null,
           ),
-          IconButton(
+          !_isStreamingStarted
+          ? IconButton(
             icon: const Icon(Icons.play_arrow_rounded),
             color: white,
             disabledColor: white.withOpacity(0.5),
@@ -222,8 +225,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                 !liveStreamController.isStreaming
                     ? onStartStreamingButtonPressed
                     : null,
-          ),
-          IconButton(
+          )
+          : IconButton(
             icon: const Icon(Icons.stop),
             color: white,
             disabledColor: white.withOpacity(0.5),
@@ -232,6 +235,25 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                     ? _showEndingConfirmDialog
                     : null,
           ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isMosaicOn = !_isMosaicOn;
+                if(_isMosaicOn) {
+                  // 모자이크 재개
+                  Provider.of<StreamingProvider>(_context!, listen: false).restartMosaic(streamingId);
+                } else {
+                  // 모자이크 중지
+                  Provider.of<StreamingProvider>(_context!, listen: false).stopMosaic(streamingId);
+                }
+              });
+            },
+            child: Text(
+              _isMosaicOn ? "Mosaic\nOn" : "Mosaic\nOff",
+              style: TextStyle(color: _isMosaicOn ? white : white.withOpacity(0.5)),
+              textAlign: TextAlign.center,
+            ),
+          )
         ],
       ),
     );
@@ -340,6 +362,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
         setState(() {
           Provider.of<StreamingProvider>(_context!, listen: false).startMosaic(streamingId);
           _isInitial = false;
+          _isStreamingStarted = true;
         });
       }
     });

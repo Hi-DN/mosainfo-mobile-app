@@ -47,6 +47,28 @@ class StreamingService {
     }
   }
 
+  // 모자이크 재개
+  Future<bool?> restartMosaic(int streamingId) async {
+    Map<String, dynamic> data = await _httpClient.getRequest('/mosaic/on/$streamingId');
+
+    if (data['result'] == 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // 모자이크 중지
+  Future<bool?> stopMosaic(int streamingId) async {
+    Map<String, dynamic> data = await _httpClient.getRequest('/mosaic/off/$streamingId');
+
+    if (data['result'] == 'true') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // 스트림 종료시 프로세스 릴리즈
   Future<bool?> releaseProcess(int streamingId) async {
     Map<String, dynamic> data = await _httpClient.getRequest('/release/$streamingId');

@@ -63,6 +63,16 @@ class StreamingProvider with ChangeNotifier {
     return result;
   }
 
+  Future<bool?> restartMosaic(int streamingId) async {
+    bool? result = await _streamingService.restartMosaic(streamingId);
+    return result;
+  }
+
+  Future<bool?> stopMosaic(int streamingId) async {
+    bool? result = await _streamingService.stopMosaic(streamingId);
+    return result;
+  }
+
   Future<bool?> releaseProcess(int streamingId) async {
     bool? result = await _streamingService.releaseProcess(streamingId);
     return result;
