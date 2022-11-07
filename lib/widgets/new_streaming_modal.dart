@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
-import 'package:mosainfo_mobile_app/src/view/streamer_view.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:provider/provider.dart';
 
@@ -105,7 +104,6 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
     return Wrap(
       runSpacing: 10,
       children: [
-        _categoryTile(StreamingCategory.values[0]),
         _categoryTile(StreamingCategory.values[1]),
         _categoryTile(StreamingCategory.values[2]),
         _categoryTile(StreamingCategory.values[3]),
@@ -115,7 +113,8 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
         _categoryTile(StreamingCategory.values[7]),
         _categoryTile(StreamingCategory.values[8]),
         _categoryTile(StreamingCategory.values[9]),
-        _categoryTile(StreamingCategory.values[10])
+        _categoryTile(StreamingCategory.values[10]),
+        _categoryTile(StreamingCategory.values[11]),
       ],
     );
   }
@@ -160,8 +159,8 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
           StreamingModel? streaming = await Provider.of<StreamingProvider>(context, listen: false).createStreaming(_selectedCategoryId, _title!);
           if(streaming != null) {
             // Provider.of<StreamingProvider>(context, listen: false).fetchStreamingList();
-            Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (BuildContext context) => StreamerView(streaming: streaming)));
+            // Navigator.pushReplacement(context,
+            //   MaterialPageRoute(builder: (BuildContext context) => StreamerView(streaming: streaming)));
           }
         }
       },
