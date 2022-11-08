@@ -5,15 +5,24 @@ HttpClient _httpClient = HttpClient();
 
 class StreamingService {
 
-  // 프로세스 리스트 조회
-  Future<List<StreamingModel>> getProcessList() async {
-    Map<String, dynamic> data = await _httpClient.getRequest('/processes');
+  // 전체 스트리밍 리스트 조회
+  Future<List<StreamingModel>> getStreamingList() async {
+    Map<String, dynamic> data = await _httpClient.getRequest('/streamings');
 
     List<dynamic> list = data['list'];
-    List<StreamingModel> processList = list.map((e) => StreamingModel.fromJson(e)).toList();
+    List<StreamingModel> streamingList = list.map((e) => StreamingModel.fromJson(e)).toList();
     
-    return processList;
-      
+    return streamingList;
+  }
+
+  // 카테고리별 스트리밍 리스트 조회
+  Future<List<StreamingModel>> getStreamingListByCategory(int categoryId) async {
+    Map<String, dynamic> data = await _httpClient.getRequest('/streamings?category=$categoryId');
+
+    List<dynamic> list = data['list'];
+    List<StreamingModel> streamingList = list.map((e) => StreamingModel.fromJson(e)).toList();
+    
+    return streamingList;
   }
 
   // 새로운 프로세스 생성

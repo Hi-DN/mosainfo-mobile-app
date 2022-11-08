@@ -105,7 +105,6 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
     return Wrap(
       runSpacing: 10,
       children: [
-        _categoryTile(StreamingCategory.values[0]),
         _categoryTile(StreamingCategory.values[1]),
         _categoryTile(StreamingCategory.values[2]),
         _categoryTile(StreamingCategory.values[3]),
@@ -115,7 +114,8 @@ class _NewStreamingModalState extends State<NewStreamingModal> {
         _categoryTile(StreamingCategory.values[7]),
         _categoryTile(StreamingCategory.values[8]),
         _categoryTile(StreamingCategory.values[9]),
-        _categoryTile(StreamingCategory.values[10])
+        _categoryTile(StreamingCategory.values[10]),
+        _categoryTile(StreamingCategory.values[11]),
       ],
     );
   }

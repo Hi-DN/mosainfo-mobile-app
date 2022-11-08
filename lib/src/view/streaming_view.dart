@@ -7,7 +7,7 @@ import 'package:mosainfo_mobile_app/src/api/http_client.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
-import 'package:mosainfo_mobile_app/src/view/text_style.dart';
+import 'package:mosainfo_mobile_app/widgets/common/text_style.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
@@ -81,6 +81,7 @@ class _StreamingViewState extends State<StreamingView> {
 
   _showWarningDialog() {
     return showDialog(
+      barrierDismissible: false,
       context: _context!,
       builder: (BuildContext context) {
         return AlertDialog(

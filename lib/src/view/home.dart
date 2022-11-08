@@ -3,13 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mosainfo_mobile_app/src/api/streaming_model.dart';
 import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 import 'package:mosainfo_mobile_app/src/provider/streaming_provider.dart';
-import 'package:mosainfo_mobile_app/src/view/no_streaming_screen.dart';
+import 'package:mosainfo_mobile_app/widgets/category_section.dart';
+import 'package:mosainfo_mobile_app/widgets/no_streaming_screen.dart';
 import 'package:mosainfo_mobile_app/src/view/streaming_view.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
 
-import 'new_streaming_modal.dart';
+import '../../widgets/new_streaming_modal.dart';
 
 
 // ignore: must_be_immutable
@@ -34,7 +35,7 @@ class Home extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20),
+          const CategorySection(),
           Expanded(child: _streamingListSection())
         ],
       )
@@ -81,6 +82,7 @@ class ProcessListSection extends StatelessWidget {
 
   _processListView(List<StreamingModel> streamingList) {
     return ListView.separated(
+      padding: const EdgeInsets.symmetric(vertical: 10),
       itemBuilder: ((context, index) {
         StreamingModel streaming = streamingList[index];
         return GestureDetector(
