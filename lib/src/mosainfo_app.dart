@@ -17,6 +17,7 @@ class MosainfoApp extends StatelessWidget {
           useInheritedMediaQuery: true,
           locale: DevicePreview.locale(context),
           builder: DevicePreview.appBuilder,
+          debugShowCheckedModeBanner: false,
           title: 'Mosainfo',
           theme: ThemeData(
             primarySwatch: Colors.indigo,
