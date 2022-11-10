@@ -14,9 +14,6 @@ class MosainfoApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => StreamingProvider()),
         ],
         child: MaterialApp(
-          useInheritedMediaQuery: true,
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
           debugShowCheckedModeBanner: false,
           useInheritedMediaQuery: true,
           locale: DevicePreview.locale(context),
