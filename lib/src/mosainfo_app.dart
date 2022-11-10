@@ -13,6 +13,7 @@ class MosainfoApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => StreamingProvider()),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Mosainfo',
           theme: ThemeData(
             primarySwatch: Colors.indigo,
