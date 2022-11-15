@@ -26,12 +26,9 @@ String bitrateToPrettyString(int bitrate) {
 }
 
 class Params {
-  final VideoConfig video = VideoConfig.withDefaultBitrate();
+  final VideoConfig video = VideoConfig.withDefaultBitrate(resolution: Resolution.RESOLUTION_480);
   final AudioConfig audio = AudioConfig();
-
-  // String rtmpUrl = "rtmp://15.164.170.6/live";
-  // String streamKey = "test";
-
+  
   String getResolutionToString() {
     return video.resolution.toPrettyString();
   }
