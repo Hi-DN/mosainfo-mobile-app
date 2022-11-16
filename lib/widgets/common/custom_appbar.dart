@@ -4,7 +4,7 @@ import 'package:mosainfo_mobile_app/src/constants/colors.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 const CustomAppBar({Key? key, this.leadingYn=false, this.onTap, this.titleTxt='Mosainfo', this.actions}) : 
-      preferredSize = const Size.fromHeight(65), super(key: key);
+      preferredSize = const Size.fromHeight(kToolbarHeight), super(key: key);
 
   @override
   final Size preferredSize;
