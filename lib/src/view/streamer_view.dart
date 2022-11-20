@@ -93,10 +93,8 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       body: Center(
         child: Stack(
           children: [
-            Expanded(
-              child: Center(
-                child: buildPreview(controller: _controller),
-              ),
+            Center(
+              child: buildPreview(controller: _controller),
             ),
             _isStreamingInfoOn
             ? Container(
@@ -139,7 +137,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-          child: Row(children: [
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Container(
               padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -172,15 +170,7 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                 ],
               ),
             ),
-            const SizedBox(width: 20),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _isStreamingInfoOn = false;
-                });
-              },
-              child: const Icon(Icons.keyboard_arrow_down, size: 24, color: white),
-            )
+            const SizedBox(width: 20)
           ]),
         ),
         Container(height: 2, color: white,),
@@ -208,14 +198,6 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                 liveStreamController != null ? onSwitchCameraButtonPressed : null,
           ),
           IconButton(
-            icon: const Icon(Icons.mic_off),
-            color: white,
-            disabledColor: white.withOpacity(0.5),
-            onPressed: liveStreamController != null
-                ? onToggleMicrophoneButtonPressed
-                : null,
-          ),
-          IconButton(
             icon: const Icon(Icons.play_arrow_rounded),
             color: white,
             disabledColor: white.withOpacity(0.5),
@@ -232,6 +214,16 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
                 liveStreamController.isStreaming
                     ? _showEndingConfirmDialog
                     : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.keyboard_arrow_down),
+            color: white,
+            disabledColor: white.withOpacity(0.5),
+            onPressed:() {
+                setState(() {
+                  _isStreamingInfoOn = false;
+                });
+              },
           ),
         ],
       ),
@@ -254,26 +246,6 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
             context, "Error", "Failed to switch camera: ${error.message}");
       } else {
         showCustomDialog(context, "Error", "Failed to switch camera: $error");
-      }
-    }
-  }
-
-  Future<void> toggleMicrophone() async {
-    final LiveStreamController liveStreamController = _controller;
-
-    if (liveStreamController == null) {
-      showInSnackBar('Error: create a camera controller first.');
-      return;
-    }
-
-    try {
-      liveStreamController.toggleMute();
-    } catch (error) {
-      if (error is PlatformException) {
-        showCustomDialog(
-            context, "Error", "Failed to toggle mute: ${error.message}");
-      } else {
-        showCustomDialog(context, "Error", "Failed to toggle mute: $error");
       }
     }
   }
@@ -321,14 +293,6 @@ class _StreamerViewState extends State<StreamerView> with WidgetsBindingObserver
 
   void onSwitchCameraButtonPressed() {
     switchCamera().then((_) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  void onToggleMicrophoneButtonPressed() {
-    toggleMicrophone().then((_) {
       if (mounted) {
         setState(() {});
       }
