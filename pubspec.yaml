@@ -41,6 +41,7 @@ dependencies:
   provider: ^6.0.3
   flutter_svg: ^1.1.6
   video_player: ^2.4.8
+  device_preview: ^1.1.0
 
 dev_dependencies:
   flutter_test:

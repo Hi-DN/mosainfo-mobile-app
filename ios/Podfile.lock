@@ -12,6 +12,8 @@ PODS:
   - MobileVLCKit (3.4.0)
   - native_device_orientation (0.0.1):
     - Flutter
+  - shared_preferences_ios (0.0.1):
+    - Flutter
   - video_player_avfoundation (0.0.1):
     - Flutter
 
@@ -20,6 +22,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_vlc_player (from `.symlinks/plugins/flutter_vlc_player/ios`)
   - native_device_orientation (from `.symlinks/plugins/native_device_orientation/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
 
 SPEC REPOS:
@@ -37,6 +40,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_vlc_player/ios"
   native_device_orientation:
     :path: ".symlinks/plugins/native_device_orientation/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/ios"
 
@@ -48,6 +53,7 @@ SPEC CHECKSUMS:
   Logboard: 0e2d8fb451aa16169825dc73d2b75a3090fabc0d
   MobileVLCKit: 20ccee43f7788a94ea1f67179e33d9600779dfd9
   native_device_orientation: 3b4cfc9565a7b879cc4fde282b3e27745e852d0d
+  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
 
 PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d

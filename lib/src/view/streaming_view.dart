@@ -50,6 +50,7 @@ class _StreamingViewState extends State<StreamingView> {
         setState(() {
           _controller.play();
           _controller.setLooping(true);
+          _controller.value.copyWith(size: const Size(850,480));
           _isLoading = false;
         });
       });
