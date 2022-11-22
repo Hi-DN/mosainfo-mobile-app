@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
-  final String baseUrl = 'http://13.125.73.1:8889/';   // 스팟 flask
-  static const String rtmpUrl = 'rtmp://13.125.73.1'; // 스팟 rtmp
-  // static const String rtmpUrl = 'rtmp://13.209.4.86';       // ec2
+  final String baseUrl = 'http://3.38.194.11:5000/';     // 비싼 flask
+  static const String rtmpUrl = 'rtmp://13.209.4.86';       // ec2
+  // static const String rtmpUrl = 'rtmp://13.125.73.1'; // 스팟 rtmp
 
   String accessToken = '';
 
