@@ -12,12 +12,15 @@ PODS:
   - MobileVLCKit (3.4.0)
   - native_device_orientation (0.0.1):
     - Flutter
+  - video_player_avfoundation (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - apivideo_live_stream (from `.symlinks/plugins/apivideo_live_stream/ios`)
   - Flutter (from `Flutter`)
   - flutter_vlc_player (from `.symlinks/plugins/flutter_vlc_player/ios`)
   - native_device_orientation (from `.symlinks/plugins/native_device_orientation/ios`)
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
 
 SPEC REPOS:
   trunk:
@@ -34,6 +37,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_vlc_player/ios"
   native_device_orientation:
     :path: ".symlinks/plugins/native_device_orientation/ios"
+  video_player_avfoundation:
+    :path: ".symlinks/plugins/video_player_avfoundation/ios"
 
 SPEC CHECKSUMS:
   apivideo_live_stream: 574f281f1503bd06aa6c13750b14770349829f96
@@ -43,6 +48,7 @@ SPEC CHECKSUMS:
   Logboard: 0e2d8fb451aa16169825dc73d2b75a3090fabc0d
   MobileVLCKit: 20ccee43f7788a94ea1f67179e33d9600779dfd9
   native_device_orientation: 3b4cfc9565a7b879cc4fde282b3e27745e852d0d
+  video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
 
 PODFILE CHECKSUM: 7368163408c647b7eb699d0d788ba6718e18fb8d
 

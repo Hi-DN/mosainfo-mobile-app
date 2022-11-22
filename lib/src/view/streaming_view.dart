@@ -11,6 +11,7 @@ import 'package:mosainfo_mobile_app/widgets/common/text_style.dart';
 import 'package:mosainfo_mobile_app/utils/category_enum.dart';
 import 'package:mosainfo_mobile_app/widgets/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
+import 'package:video_player/video_player.dart';
 
 class StreamingView extends StatefulWidget {
   const StreamingView({Key? key, required this.streaming}) : super(key: key);
@@ -22,9 +23,12 @@ class StreamingView extends StatefulWidget {
 }
 
 class _StreamingViewState extends State<StreamingView> {
+  late VideoPlayerController _controller;
   late final VlcPlayerController _vlcPlayerController;
   late BuildContext? _context;
   late StreamingModel streaming;
+
+  late final bool _isVideo;
 
   bool _isLoading = true;
   final bool _isTimerOn = true;
@@ -35,13 +39,26 @@ class _StreamingViewState extends State<StreamingView> {
 
   @override
   void initState() {
+    _isVideo = widget.streaming.id == 0;
     streaming = widget.streaming;
-    _vlcPlayerController = VlcPlayerController.network(
-      "${HttpClient.rtmpUrl}/live-out/${widget.streaming.id}",
-      autoPlay: true
-    );
 
-    timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => _checkLoading());
+    if(_isVideo) {
+      _controller = VideoPlayerController.asset(
+        'assets/images/plate480.mp4'
+      )..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {
+          _controller.play();
+          _controller.setLooping(true);
+        });
+      });
+    } else {
+      _vlcPlayerController =  VlcPlayerController.network(
+        "${HttpClient.rtmpUrl}/live-out/${widget.streaming.id}",
+        autoPlay: true
+      );
+      timer = Timer.periodic(const Duration(seconds: 10), (Timer t) => _checkLoading());
+    }
 
     super.initState();
   }
@@ -129,7 +146,14 @@ class _StreamingViewState extends State<StreamingView> {
             child: Container(
               color: white,
               width: screenWidth, height: screenHeight,
-              child: VlcPlayer(
+              child: _isVideo
+              ? _controller.value.isInitialized
+                  ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    )
+                  : Container()
+              : VlcPlayer(
                 controller: _vlcPlayerController, 
                 aspectRatio: screenWidth / (screenHeight - kToolbarHeight),
                 placeholder: const Center(child: CircularProgressIndicator()))
