@@ -11,7 +11,7 @@ Real-time Pixelizing Personal Information Multi-Streaming Application &nbsp;&nbs
 <br/> 
 <br/> 
 
-## 💻 MOSAINFO BACKEND
+## 💻 MOSAINFO MOBILE APPLICATION
 해당 레포지토리는 MOSAINFO 프로젝트의 프런트엔드(모바일 앱) 개발에 관한 리포지토리입니다.<br/>
 [백엔드 리포지토리 바로가기](https://github.com/Hi-DN/mosainfo-backend)
 
